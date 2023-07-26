@@ -1,6 +1,6 @@
 {
   "name": "@hsu-react/single-route",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "single-route",
   "repository": "git@github.com:VitaTsui/single-route.git",
   "author": "VitaHsu <vitahsu444@gmail.com>",
@@ -9,6 +9,9 @@
   "module": "es/index.js",
   "unpkg": "dist/single-route.min.js",
   "typings": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "es",
     "lib",
