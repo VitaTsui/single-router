@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "single-route",
   "repository": "git@github.com:VitaTsui/single-route.git",
-  "author": "VitaHsu <vitahsu444@gmail.com>",
+  "author": "VitaHsu <vitahsu7@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
