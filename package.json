@@ -8,7 +8,6 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/single-route.min.js",
-  "types": "lib/typing.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -41,6 +40,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
+    "@testing-library/react": "^14.0.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/jest": "^29.5.2",
     "@types/react": "^18.2.13",
