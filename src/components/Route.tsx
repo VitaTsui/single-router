@@ -31,10 +31,10 @@ const Route: React.FC<RProps> = (props) => {
   const params = useCallback((location: string, paramKeys: string[]): Record<string, string | undefined> => {
     let _locationPart = location.split('/')
     _locationPart = _locationPart.slice(_locationPart.length - paramKeys.length, _locationPart.length)
-    const _params = paramKeys.reduce((acc, cur, idx) => {
+    const _params = paramKeys.reduce((acc: Record<string, string | undefined>, cur, idx) => {
       acc[cur] = _locationPart[idx]
       return acc
-    }, {})
+    }, {} as Record<string, string | undefined>)
     return _params
   }, [])
 
