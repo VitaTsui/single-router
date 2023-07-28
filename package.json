@@ -8,7 +8,7 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/single-route.min.js",
-  "typings": "lib/index.d.ts",
+  "types": "lib/typing.d.ts",
   "publishConfig": {
     "access": "public"
   },
