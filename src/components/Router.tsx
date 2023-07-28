@@ -6,9 +6,9 @@ interface RSProps {
   children?: React.ReactNode
 }
 
-export const Router: React.FC<RSProps> = (props) => {
+const Router: React.FC<RSProps> = (props) => {
   const { children } = props
-  const [local, setLocal] = useState<Router | undefined>(undefined)
+  const [local, setLocal] = useState<IRouter | undefined>(undefined)
 
   const historyRef = React.useRef<Navigator>()
   if (historyRef.current == null) {
@@ -42,3 +42,5 @@ export const Router: React.FC<RSProps> = (props) => {
     </NavigationContext.Provider>
   )
 }
+
+export default Router

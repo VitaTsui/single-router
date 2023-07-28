@@ -7,4 +7,4 @@ interface NavigationContextObject {
 
 export const NavigationContext = createContext<NavigationContextObject>(null!)
 
-export const LocationContext = createContext<{ location?: Router }>(null!)
+export const LocationContext = createContext<{ location?: IRouter }>(null!)

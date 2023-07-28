@@ -1,9 +1,9 @@
-declare interface Router {
+declare interface IRouter {
   route: string
   routes: string[]
   index: number
 }
 
 declare interface Window {
-  router: Router
+  router: IRouter
 }

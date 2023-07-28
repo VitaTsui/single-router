@@ -1,19 +1,19 @@
 import React, { useEffect, createElement } from 'react'
 import { useNavigate, useLocation } from '../hooks'
 
-interface Route {
+interface RouteItem {
   path: string
   component: React.FC
 }
 
-export type Routes = Route[]
+export type Routes = RouteItem[]
 
 interface RProps {
   Routes: Routes
-  defaultPath: string
+  defaultPath?: string
 }
 
-export const Route: React.FC<RProps> = (props) => {
+const Route: React.FC<RProps> = (props) => {
   const { Routes, defaultPath } = props
   const navigator = useNavigate()
   const location = useLocation()
@@ -32,3 +32,5 @@ export const Route: React.FC<RProps> = (props) => {
     </>
   )
 }
+
+export default Route
