@@ -8,7 +8,11 @@ interface RSProps {
 
 const Router: React.FC<RSProps> = (props) => {
   const { children } = props
-  const [local, setLocal] = useState<IRouter | undefined>(undefined)
+  const [local, setLocal] = useState<IRouter>({
+    route: '',
+    routes: [],
+    index: 0
+  })
 
   const historyRef = React.useRef<Navigator>()
   if (historyRef.current == null) {

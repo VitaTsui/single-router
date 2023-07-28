@@ -1,9 +1,12 @@
-import React, { useEffect, createElement } from 'react'
+import React, { useEffect, createElement, useCallback, useMemo } from 'react'
 import { useNavigate, useLocation } from '../hooks'
+import useRoutesFormat from '../hooks/_/useRoutesFormat'
+import { ParamsContext } from '../contexts'
 
 interface RouteItem {
   path: string
-  component: React.FC
+  component: React.ReactNode
+  children?: RouteItem[]
 }
 
 export type Routes = RouteItem[]
@@ -17,6 +20,7 @@ const Route: React.FC<RProps> = (props) => {
   const { Routes, defaultPath } = props
   const navigator = useNavigate()
   const location = useLocation()
+  const _routes = useRoutesFormat(Routes)
 
   useEffect(() => {
     if (defaultPath) {
@@ -24,10 +28,39 @@ const Route: React.FC<RProps> = (props) => {
     }
   }, [])
 
+  const params = useCallback((location: string, paramKeys: string[]): Record<string, string | undefined> => {
+    let _locationPart = location.split('/')
+    _locationPart = _locationPart.slice(_locationPart.length - paramKeys.length, _locationPart.length)
+    const _params = paramKeys.reduce((acc, cur, idx) => {
+      acc[cur] = _locationPart[idx]
+      return acc
+    }, {})
+    return _params
+  }, [])
+
   return (
     <>
-      {Routes.map((route) => {
-        return <>{route.path === location?.route && createElement(route.component)}</>
+      {_routes.map((route, idx) => {
+        const { path, paramKeys, component } = route
+        const _location = location.route
+
+        let isNull = !_location.includes(path)
+        if (!isNull) {
+          const _locationPart = _location.split('/')
+          const _pathPart = path.split('/')
+          if (_locationPart.length !== _pathPart.length + paramKeys.length) {
+            isNull = true
+          }
+        }
+        if (isNull) return null
+
+        const _params = params(_location, paramKeys)
+
+        return (
+          <ParamsContext.Provider value={{ params: _params }} key={idx}>
+            {component}
+          </ParamsContext.Provider>
+        )
       })}
     </>
   )

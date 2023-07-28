@@ -7,4 +7,6 @@ interface NavigationContextObject {
 
 export const NavigationContext = createContext<NavigationContextObject>(null!)
 
-export const LocationContext = createContext<{ location?: IRouter }>(null!)
+export const LocationContext = createContext<{ location: IRouter }>(null!)
+
+export const ParamsContext = createContext<{ params: Record<string, string | undefined> }>(null!)
