@@ -1,4 +1,4 @@
-import React, { useEffect, createElement, useCallback, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate, useLocation } from '../hooks'
 import useRoutesFormat from '../hooks/_/useRoutesFormat'
 import { ParamsContext } from '../contexts'
@@ -18,17 +18,17 @@ interface RProps {
 
 const Route: React.FC<RProps> = (props) => {
   const { Routes, defaultPath } = props
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const location = useLocation()
   const _routes = useRoutesFormat(Routes)
 
   useEffect(() => {
     if (defaultPath) {
-      navigator(defaultPath)
+      navigate(defaultPath)
     }
   }, [])
 
-  const params = useCallback((location: string, paramKeys: string[]): Record<string, string | undefined> => {
+  const params = (location: string, paramKeys: string[]): Record<string, string | undefined> => {
     let _locationPart = location.split('/')
     _locationPart = _locationPart.slice(_locationPart.length - paramKeys.length, _locationPart.length)
     const _params = paramKeys.reduce((acc: Record<string, string | undefined>, cur, idx) => {
@@ -36,7 +36,20 @@ const Route: React.FC<RProps> = (props) => {
       return acc
     }, {} as Record<string, string | undefined>)
     return _params
-  }, [])
+  }
+
+  const isNull = (location: string, path: string, paramKeys: string[]): boolean => {
+    let isNull = false
+    isNull = !location.includes(path)
+    if (!isNull) {
+      const _locationPart = location.split('/')
+      const _pathPart = path.split('/')
+      if (_locationPart.length !== _pathPart.length + paramKeys.length) {
+        isNull = true
+      }
+    }
+    return isNull
+  }
 
   return (
     <>
@@ -44,15 +57,8 @@ const Route: React.FC<RProps> = (props) => {
         const { path, paramKeys, component } = route
         const _location = location.route
 
-        let isNull = !_location.includes(path)
-        if (!isNull) {
-          const _locationPart = _location.split('/')
-          const _pathPart = path.split('/')
-          if (_locationPart.length !== _pathPart.length + paramKeys.length) {
-            isNull = true
-          }
-        }
-        if (isNull) return null
+        const _isNull = isNull(_location, path, paramKeys)
+        if (_isNull) return null
 
         const _params = params(_location, paramKeys)
 

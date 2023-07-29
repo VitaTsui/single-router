@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { NavigationContext, LocationContext } from '../contexts'
-import { createHistory, Navigator } from '../history'
+import { createHistory } from '../history'
 
 interface RSProps {
   children?: React.ReactNode
@@ -14,34 +14,27 @@ const Router: React.FC<RSProps> = (props) => {
     index: 0
   })
 
-  const historyRef = React.useRef<Navigator>()
-  if (historyRef.current == null) {
-    historyRef.current = createHistory()
-  }
-  const history = historyRef.current
-  const navigator = history
-  const navigationContext = useMemo(() => ({ navigator }), [navigator])
-
   const locationContext = useMemo(() => {
     return { location: local }
   }, [local])
 
-  const setLocation = () => {
-    const local = window.router
-
+  const setLocalEvent = (e: Event) => {
+    const local = (e as CustomEvent).detail
     setLocal(local)
   }
 
   useEffect(() => {
-    window.addEventListener('router', setLocation)
+    setLocal(window.router)
+
+    window.addEventListener('routerChange', setLocalEvent)
 
     return () => {
-      window.removeEventListener('router', setLocation)
+      window.removeEventListener('routerChange', setLocalEvent)
     }
   }, [])
 
   return (
-    <NavigationContext.Provider value={navigationContext}>
+    <NavigationContext.Provider value={{ navigator: createHistory() }}>
       <LocationContext.Provider value={locationContext}>{children}</LocationContext.Provider>
     </NavigationContext.Provider>
   )

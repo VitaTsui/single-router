@@ -5,18 +5,17 @@ export interface NavigateOptions {
 }
 
 export default function push(path: string, options?: NavigateOptions) {
-  const location = path
-
   if (options?.replace) {
     window.router = {
-      route: location,
-      routes: [location],
+      route: path,
+      routes: [path],
       index: 0
     }
 
     return
   }
 
+  const location = path
   const routes = window.router.routes
   const locationIndex = routes.indexOf(location)
 

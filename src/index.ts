@@ -1,6 +1,8 @@
 import { Route, Router, Routes } from './components'
-import { useNavigate, useLocation, useRoutes, useParams } from './hooks'
+import { useNavigate, useLocation, useParams } from './hooks'
 
 export type { Routes }
 
-export { useNavigate, useLocation, useRoutes, useParams, Route, Router }
+export { Route, Router }
+
+export { useNavigate, useLocation, useParams }

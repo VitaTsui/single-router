@@ -23,6 +23,18 @@ describe('createHistory', () => {
     expect(router).toEqual({ route: '/push', routes: ['/push'], index: 0 })
   })
 
+  test(`history setRoute`, () => {
+    let set = false
+
+    try {
+      window.router.route = '/push2'
+      set = true
+    } catch {
+      set = false
+    }
+    expect(set).toBe(false)
+  })
+
   test(`history.push replace`, () => {
     history.push('/go', { replace: true })
     const router = (window as any).router

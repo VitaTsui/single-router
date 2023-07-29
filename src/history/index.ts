@@ -6,29 +6,28 @@ export interface Navigator {
   push(to: string, options?: NavigateOptions): void
 }
 
-export function createHistory(): Navigator {
-  if (!window.router) {
-    window.router = {
+Object.defineProperty(window, 'router', {
+  get: function () {
+    const value = this._router ?? {
       route: '',
       routes: [],
       index: 0
     }
-    Object.defineProperty(window, 'router', {
-      get: function () {
-        return (
-          this._router ?? {
-            route: '',
-            routes: [],
-            index: 0
-          }
-        )
-      },
-      set: function (value) {
-        this._router = value
-      }
-    })
-  }
 
+    return Object.freeze(value)
+  },
+  set: function (value: IRouter) {
+    const customEvent = new CustomEvent<IRouter>('routerChange', {
+      detail: value,
+      bubbles: false
+    })
+    window.dispatchEvent(customEvent)
+
+    this._router = Object.freeze(value)
+  }
+})
+
+export function createHistory(): Navigator {
   const history: Navigator = {
     go,
     push
