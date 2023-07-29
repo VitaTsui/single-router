@@ -12,9 +12,9 @@ const config = {
   entry: ['./src/index.ts'],
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: devMode ? 'single-route.js' : 'single-route.min.js',
+    filename: devMode ? 'single-router.js' : 'single-router.min.js',
     globalObject: 'this',
-    library: 'single-route',
+    library: 'single-router',
     libraryTarget: 'umd'
   },
   module: {
