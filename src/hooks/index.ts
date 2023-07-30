@@ -6,6 +6,3 @@ export { useNavigate, useLocation, useParams, useRoutes }
 
 import { PathRoutes, IndexRoutes, Routes } from './useRoutes'
 export type { PathRoutes, IndexRoutes, Routes }
-
-import useMatch from './_useMatch'
-export { useMatch }

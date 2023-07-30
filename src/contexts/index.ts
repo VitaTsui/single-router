@@ -8,5 +8,3 @@ export const NavigationContext = createContext<{ navigator: Navigator }>(null!)
 export const LocationContext = createContext<{ location: IRouter }>(null!)
 
 export const ParamsContext = createContext<{ params: Params }>(null!)
-
-export const MatchContext = createContext<{ match: Match }>(null!)

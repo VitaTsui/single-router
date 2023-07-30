@@ -1,3 +1,5 @@
+/// <reference types="../typing" />
+
 export default function getParams(location: string, paramKeys: string[]): Params {
   let _locationPart = location.split('/')
   _locationPart = _locationPart.slice(_locationPart.length - paramKeys.length, _locationPart.length)

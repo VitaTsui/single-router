@@ -1,13 +1,19 @@
-declare type Match = string[] | null
+declare interface MatchItem {
+  basicName: string[]
+  path: string
+}
+
+declare type Match = Array<MatchItem>
 
 declare type Params = Record<string, string | undefined>
 
 declare interface IRouter {
-  route: string
-  routes: string[]
+  pathname: string
+  history: string[]
   index: number
 }
 
 declare interface Window {
   router: IRouter
+  match: Match
 }

@@ -2468,10 +2468,10 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hsu-utils@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/hsu-utils/-/hsu-utils-0.0.3.tgz#aa249478f6749d66203b8eb4de9c85eea41d5c3b"
-  integrity sha512-Ce7ipdW55H6uCKU8H0KDFpjVQ/PPQmJzb+c67jEdO8nOnXNnLLjkp3EgfM0x+YwAeiGvhREt6kWPNnUJjnGN5w==
+hsu-utils@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/hsu-utils/-/hsu-utils-0.0.4.tgz#d6e129d371f85aeb57a5767205fbf1bb62cc8ba8"
+  integrity sha512-zGpNde2B5VP/fHIsjdNbNN5mfIO7J1H5pFGePNEUvwpvDp/reimUNhhZuuLXfgynVFi5A7PePcpO5sZj+z+rDw==
 
 html-encoding-sniffer@^3.0.0:
   version "3.0.0"

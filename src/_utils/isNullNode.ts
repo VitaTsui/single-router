@@ -9,7 +9,7 @@ interface NodeInfo {
 }
 
 export default function isNullNode({ location, path, paramKeys, match, params }: NodeInfo): boolean {
-  if (params) {
+  if (Object.keys(params ?? {})?.length > 0) {
     throw new Error('Nesting in dynamic routes is not allowed.')
   }
 
@@ -20,13 +20,25 @@ export default function isNullNode({ location, path, paramKeys, match, params }:
   if (!isNull) {
     const _locationPart = location.split('/')
     const _pathPart = path.split('/')
-    if (_locationPart.length !== _pathPart.length + paramKeys.length) {
+    const isLengthEqual = _locationPart.length === _pathPart.length + paramKeys.length
+
+    if (!isLengthEqual) {
       isNull = true
     }
   }
 
-  if (isNull && !paramKeys.length && match) {
-    if (match.includes(path)) {
+  if (isNull && match) {
+    const _match = match.find((item) => {
+      const path = item.path
+
+      const _locationPart = location.split('/')
+      const _pathPart = path.split('/')
+      const isLengthEqual = _locationPart.length === _pathPart.length
+
+      return location.includes(path.replace(/(\/):(\w+)/gi, '')) && isLengthEqual
+    })?.basicName
+
+    if (_match && _match.includes(path)) {
       isNull = false
     }
   }

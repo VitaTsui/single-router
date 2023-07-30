@@ -1,6 +1,6 @@
 import go from './_go'
 import push, { NavigateOptions } from './_push'
-import { ValEqual } from 'hsu-utils'
+import { Equal } from 'hsu-utils'
 
 export interface Navigator {
   go(delta: number): void
@@ -10,15 +10,15 @@ export interface Navigator {
 Object.defineProperty(window, 'router', {
   get: function () {
     const value = this._router ?? {
-      route: '',
-      routes: [],
+      pathname: '',
+      history: [],
       index: 0
     }
 
     return Object.freeze(value)
   },
   set: function (value: IRouter) {
-    if (!ValEqual(this._router, value)) {
+    if (!this._router || !Equal.ObjEqual(this._router, value)) {
       const customEvent = new CustomEvent<IRouter>('routerChange', {
         detail: value,
         bubbles: false
@@ -27,6 +27,17 @@ Object.defineProperty(window, 'router', {
 
       this._router = Object.freeze(value)
     }
+  }
+})
+
+Object.defineProperty(window, 'match', {
+  get: function () {
+    const value = this._match ?? []
+
+    return Object.freeze(value)
+  },
+  set: function (value: IRouter) {
+    this._match = Object.freeze(value)
   }
 })
 
