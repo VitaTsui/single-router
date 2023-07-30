@@ -36,7 +36,7 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
       const _path = parent
         ? path.includes(parent)
           ? path
-          : `${parent}${path.startsWith('/') ? '/' : ''}${path}`
+          : `${parent}${path.startsWith('/') ? '' : '/'}${path}`
         : path
 
       const _route = {
