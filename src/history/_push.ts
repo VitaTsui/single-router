@@ -7,8 +7,8 @@ export interface NavigateOptions {
 export default function push(path: string, options?: NavigateOptions) {
   if (options?.replace) {
     window.router = {
-      route: path,
-      routes: [path],
+      pathname: path,
+      history: [path],
       index: 0
     }
 
@@ -16,31 +16,31 @@ export default function push(path: string, options?: NavigateOptions) {
   }
 
   const location = path
-  const routes = window.router.routes
-  const locationIndex = routes.indexOf(location)
+  const history = window.router.history
+  const locationIndex = history.indexOf(location)
 
-  if (routes.length > 0 && locationIndex !== -1 && locationIndex !== routes.length - 1) {
+  if (history.length > 0 && locationIndex !== -1 && locationIndex !== history.length - 1) {
     window.router = {
-      route: location,
-      routes: routes.slice(0, locationIndex + 1),
+      pathname: location,
+      history: history.slice(0, locationIndex + 1),
       index: locationIndex
     }
-  } else if (routes.length > 0) {
-    if (path !== routes[routes.length - 1]) {
-      routes.push(path)
+  } else if (history.length > 0) {
+    if (path !== history[history.length - 1]) {
+      history.push(path)
     }
 
     window.router = {
-      route: location,
-      routes: routes,
-      index: routes.length - 1
+      pathname: location,
+      history: history,
+      index: history.length - 1
     }
-  } else if (routes.length === 0) {
-    routes.push(path)
+  } else if (history.length === 0) {
+    history.push(path)
 
     window.router = {
-      route: location,
-      routes: routes,
+      pathname: location,
+      history: history,
       index: 0
     }
   }

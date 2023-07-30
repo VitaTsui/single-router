@@ -8,24 +8,19 @@ interface RSProps {
 
 const Router: React.FC<RSProps> = (props) => {
   const { children } = props
-  const [local, setLocal] = useState<IRouter>({
-    route: '',
-    routes: [],
-    index: 0
-  })
+  const [location, setLocation] = useState<IRouter>(window.router)
 
   const locationContext = useMemo(() => {
-    return { location: local }
-  }, [local])
+    return { location: location }
+  }, [location])
 
   const setLocalEvent = (e: Event) => {
-    const local = (e as CustomEvent).detail
-    setLocal(local)
+    const location = (e as CustomEvent).detail
+    setLocation(location)
   }
 
   useEffect(() => {
-    setLocal(window.router)
-
+    setLocation(window.router)
     window.addEventListener('routerChange', setLocalEvent)
 
     return () => {

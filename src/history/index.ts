@@ -1,5 +1,6 @@
 import go from './_go'
 import push, { NavigateOptions } from './_push'
+import { Equal } from 'hsu-utils'
 
 export interface Navigator {
   go(delta: number): void
@@ -9,21 +10,34 @@ export interface Navigator {
 Object.defineProperty(window, 'router', {
   get: function () {
     const value = this._router ?? {
-      route: '',
-      routes: [],
+      pathname: '',
+      history: [],
       index: 0
     }
 
     return Object.freeze(value)
   },
   set: function (value: IRouter) {
-    const customEvent = new CustomEvent<IRouter>('routerChange', {
-      detail: value,
-      bubbles: false
-    })
-    window.dispatchEvent(customEvent)
+    if (!this._router || !Equal.ObjEqual(this._router, value)) {
+      const customEvent = new CustomEvent<IRouter>('routerChange', {
+        detail: value,
+        bubbles: false
+      })
+      window.dispatchEvent(customEvent)
 
-    this._router = Object.freeze(value)
+      this._router = Object.freeze(value)
+    }
+  }
+})
+
+Object.defineProperty(window, 'match', {
+  get: function () {
+    const value = this._match ?? []
+
+    return Object.freeze(value)
+  },
+  set: function (value: IRouter) {
+    this._match = Object.freeze(value)
   }
 })
 

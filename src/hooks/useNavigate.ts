@@ -15,6 +15,8 @@ export default function useNavigate(): NavigateFunction {
         navigator.go(to)
         return
       }
+
+      if (!to.startsWith('/')) to = `/${to}`
       navigator.push(to, options)
     },
     [navigator]
