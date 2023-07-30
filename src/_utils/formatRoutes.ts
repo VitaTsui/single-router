@@ -33,7 +33,11 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
       }
       _routes.push(_route)
     } else if (!index) {
-      const _path = parent ? (path.includes(parent) ? path : `${parent}/${path}`) : path
+      const _path = parent
+        ? path.includes(parent)
+          ? path
+          : `${parent}${path.startsWith('/') ? '/' : ''}${path}`
+        : path
 
       const _route = {
         ...route,
