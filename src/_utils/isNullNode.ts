@@ -7,14 +7,11 @@ interface NodeInfo {
 }
 
 export default function isNullNode({ location, path, paramKeys, match, params }: NodeInfo): boolean {
-  let isNull = false
-
   if (params) {
-    isNull = true
-    console.error('不允许在动态路由中嵌套路由')
-
-    return isNull
+    throw new Error('Nesting in dynamic routes is not allowed.')
   }
+
+  let isNull = false
 
   isNull = !location.includes(path)
 

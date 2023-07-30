@@ -1,6 +1,4 @@
-import Route, { Routes } from './Route'
+import Route, { RouteProps } from './Route'
 import Router from './Router'
-
-export type { Routes }
-
+export type { RouteProps }
 export { Route, Router }
