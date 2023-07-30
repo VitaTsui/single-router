@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useLocation, useMatch, useParams } from '../hooks'
+import { useLocation, useMatch } from '../hooks'
 import { MatchContext, ParamsContext } from '../contexts'
 import formatRoute from '../_utils/formatRoute'
 import getParams from '../_utils/getParams'
@@ -14,10 +14,9 @@ export interface RouteProps {
 const Route: React.FC<RouteProps> = (props) => {
   const { path, component, paramKeys } = formatRoute(props)
   const location = useLocation()?.route
-  const params = useParams()
   const match = useMatch()
 
-  const isNull = useMemo(() => isNullNode({ location, path, paramKeys, match, params }), [location])
+  const isNull = useMemo(() => isNullNode({ location, path, paramKeys, match }), [location])
   if (isNull) return null
 
   const _params = useMemo(() => getParams(location, paramKeys), [location])

@@ -1,12 +1,15 @@
+import { useContext } from 'react'
+import { ParamsContext } from '../contexts'
+
 interface NodeInfo {
   location: string
   path: string
   paramKeys: string[]
   match: Match
-  params: Params
 }
 
-export default function isNullNode({ location, path, paramKeys, match, params }: NodeInfo): boolean {
+export default function isNullNode({ location, path, paramKeys, match }: NodeInfo): boolean {
+  const params = useContext(ParamsContext)?.params
   if (params) {
     throw new Error('Nesting in dynamic routes is not allowed.')
   }
