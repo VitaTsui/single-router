@@ -1,74 +1,33 @@
-import React, { useEffect } from 'react'
-import { useNavigate, useLocation } from '../hooks'
-import useRoutesFormat from '../hooks/_/useRoutesFormat'
-import { ParamsContext } from '../contexts'
+import React, { useMemo } from 'react'
+import { useLocation, useMatch, useParams } from '../hooks'
+import { MatchContext, ParamsContext } from '../contexts'
+import formatRoute from '../_utils/formatRoute'
+import getParams from '../_utils/getParams'
+import isNullNode from '../_utils/isNullNode'
+import setMatch from '../_utils/setMatch'
 
-interface RouteItem {
+export interface RouteProps {
   path: string
   component: React.ReactNode
-  children?: RouteItem[]
 }
 
-export type Routes = RouteItem[]
+const Route: React.FC<RouteProps> = (props) => {
+  const { path, component, paramKeys } = formatRoute(props)
+  const location = useLocation()?.route
+  const params = useParams()
+  const match = useMatch()
 
-interface RProps {
-  Routes: Routes
-  defaultPath?: string
-}
+  const isNull = useMemo(() => isNullNode({ location, path, paramKeys, match, params }), [location])
+  if (isNull) return null
 
-const Route: React.FC<RProps> = (props) => {
-  const { Routes, defaultPath } = props
-  const navigate = useNavigate()
-  const location = useLocation()
-  const _routes = useRoutesFormat(Routes)
+  const _params = useMemo(() => getParams(location, paramKeys), [location])
 
-  useEffect(() => {
-    if (defaultPath) {
-      navigate(defaultPath)
-    }
-  }, [])
-
-  const params = (location: string, paramKeys: string[]): Record<string, string | undefined> => {
-    let _locationPart = location.split('/')
-    _locationPart = _locationPart.slice(_locationPart.length - paramKeys.length, _locationPart.length)
-    const _params = paramKeys.reduce((acc: Record<string, string | undefined>, cur, idx) => {
-      acc[cur] = _locationPart[idx]
-      return acc
-    }, {} as Record<string, string | undefined>)
-    return _params
-  }
-
-  const isNull = (location: string, path: string, paramKeys: string[]): boolean => {
-    let isNull = false
-    isNull = !location.includes(path)
-    if (!isNull) {
-      const _locationPart = location.split('/')
-      const _pathPart = path.split('/')
-      if (_locationPart.length !== _pathPart.length + paramKeys.length) {
-        isNull = true
-      }
-    }
-    return isNull
-  }
+  const _match = useMemo(() => setMatch(match, paramKeys, path), [match])
 
   return (
-    <>
-      {_routes.map((route, idx) => {
-        const { path, paramKeys, component } = route
-        const _location = location.route
-
-        const _isNull = isNull(_location, path, paramKeys)
-        if (_isNull) return null
-
-        const _params = params(_location, paramKeys)
-
-        return (
-          <ParamsContext.Provider value={{ params: _params }} key={idx}>
-            {component}
-          </ParamsContext.Provider>
-        )
-      })}
-    </>
+    <MatchContext.Provider value={{ match: _match }}>
+      <ParamsContext.Provider value={{ params: _params }} children={component} />
+    </MatchContext.Provider>
   )
 }
 
