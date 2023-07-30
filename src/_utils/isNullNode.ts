@@ -1,3 +1,5 @@
+/// <reference types="../typing" />
+
 interface NodeInfo {
   location: string
   path: string
