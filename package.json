@@ -1,6 +1,6 @@
 {
   "name": "@hsu-react/single-router",
-  "version": "0.0.2-alpha.5",
+  "version": "0.0.2-alpha.48",
   "description": "single-router",
   "repository": "git@github.com:VitaTsui/single-router.git",
   "author": "VitaHsu <vitahsu7@gmail.com>",
@@ -52,7 +52,6 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "file-save": "^0.2.0",
-    "hsu-utils": "^0.0.3",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "jsdom": "^22.1.0",
@@ -68,5 +67,7 @@
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "hsu-utils": "^0.0.4"
+  }
 }
