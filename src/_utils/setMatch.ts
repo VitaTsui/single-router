@@ -1,5 +1,7 @@
+/// <reference types="../typing" />
+
 export default function setMatch(match: Match, paramKeys: string[], path: string): Match {
-  if (!!paramKeys.length) {
+  if (paramKeys.length > 0) {
     return match
   }
 

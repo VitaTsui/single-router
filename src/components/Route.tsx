@@ -8,7 +8,7 @@ import setMatch from '../_utils/setMatch'
 
 export interface RouteProps {
   path: string
-  component: React.ReactNode
+  component: React.ReactElement
 }
 
 const Route: React.FC<RouteProps> = (props) => {
@@ -17,16 +17,19 @@ const Route: React.FC<RouteProps> = (props) => {
   const params = useParams()
   const match = useMatch()
 
-  const isNull = useMemo(() => isNullNode({ location, path, paramKeys, match, params }), [location])
+  const isNull = useMemo(
+    () => isNullNode({ location, path, paramKeys, match, params }),
+    [location, match, paramKeys, params, path]
+  )
+
+  const _params = useMemo(() => (isNull ? {} : getParams(location, paramKeys)), [location, paramKeys, isNull])
+  const _match = useMemo(() => (isNull ? null : setMatch(match, paramKeys, path)), [match, paramKeys, path, isNull])
+
   if (isNull) return null
-
-  const _params = useMemo(() => getParams(location, paramKeys), [location])
-
-  const _match = useMemo(() => setMatch(match, paramKeys, path), [match])
 
   return (
     <MatchContext.Provider value={{ match: _match }}>
-      <ParamsContext.Provider value={{ params: _params }} children={component} />
+      <ParamsContext.Provider value={{ params: _params }}>{component}</ParamsContext.Provider>
     </MatchContext.Provider>
   )
 }

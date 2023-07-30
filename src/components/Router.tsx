@@ -35,7 +35,7 @@ const Router: React.FC<RSProps> = (props) => {
 
   return (
     <NavigationContext.Provider value={{ navigator: createHistory() }}>
-      <LocationContext.Provider value={locationContext} children={children} />
+      <LocationContext.Provider value={locationContext}>{children}</LocationContext.Provider>
     </NavigationContext.Provider>
   )
 }
