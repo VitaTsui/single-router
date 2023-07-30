@@ -1,4 +1,5 @@
 /// <reference types="../typing" />
+import { deepCopy } from 'hsu-utils'
 
 interface MatchData {
   match: Match
@@ -8,17 +9,18 @@ interface MatchData {
 }
 
 export default function setMatch({ match, path, basicName, paramKeys }: MatchData): Match {
-  if (!match) {
-    match = []
+  let _match = deepCopy(match)
+  if (!_match) {
+    _match = []
   }
 
   if (paramKeys.length > 0) {
     path = path + '/:' + paramKeys.join('/:')
   }
 
-  const _match = match.find((item) => item.path === path)
-  if (_match) {
-    return match
+  const __match = _match.find((item) => item.path === path)
+  if (__match) {
+    return _match
   }
 
   if (!basicName) {
@@ -26,15 +28,15 @@ export default function setMatch({ match, path, basicName, paramKeys }: MatchDat
       basicName: ['/'],
       path
     }
-    match.push(__match)
+    _match.push(__match)
   } else {
     const _basicName = match.filter((item) => basicName.includes(item.path)).map((item) => item.path)
     const __match: MatchItem = {
       basicName: _basicName,
       path
     }
-    match.push(__match)
+    _match.push(__match)
   }
 
-  return match
+  return _match
 }
