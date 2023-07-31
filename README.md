@@ -148,6 +148,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
       navigate("/path1");
+      // 后退
+      // navigate(-1)
   }, [navigate]);
 
   ...
@@ -172,7 +174,7 @@ const App: React.FC = () => {
   useEffect(() => {
     // {pathname: string, history: string[], index: number}
     // 初始状态
-    // {pathname: '', history: [], index: 0}
+    // {pathname: '', history: [], index: -1}
     console.log(location)
   }, [location]);
 

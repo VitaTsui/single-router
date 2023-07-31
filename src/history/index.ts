@@ -12,7 +12,7 @@ Object.defineProperty(window, 'router', {
     const value = this._router ?? {
       pathname: '',
       history: [],
-      index: 0
+      index: -1
     }
 
     return Object.freeze(value)
