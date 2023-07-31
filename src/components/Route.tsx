@@ -19,7 +19,7 @@ Object.defineProperty(window, 'match', {
 
 export interface RouteProps {
   path: string
-  component?: React.ReactElement
+  component?: React.ReactElement | null
 }
 
 const Route: React.FC<RouteProps> = (props) => {
