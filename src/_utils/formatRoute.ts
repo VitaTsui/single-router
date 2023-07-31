@@ -2,7 +2,7 @@ import { RouteProps } from '../components/Route'
 
 interface Route {
   path: string
-  component: React.ReactNode
+  component?: React.ReactElement | null
   paramKeys: Array<string>
 }
 

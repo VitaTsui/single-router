@@ -1,3 +1,4 @@
+import { Equal } from 'hsu-utils'
 import { PathRoutes, Routes } from '../hooks'
 
 export default function formatRoutes(routes: Routes, parent?: string): PathRoutes[] {
@@ -19,12 +20,21 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
         throw new Error("'index' and 'path' are not allowed at the same time.")
       }
 
-      let __routes: PathRoutes[] = []
-      if (!_index) {
-        __routes = formatRoutes([route, ...children], path)
-      } else {
-        __routes = formatRoutes(children, path)
+      const _path = parent
+        ? path?.includes(parent)
+          ? path
+          : `${parent}${path?.startsWith('/') ? '' : path ? '/' : ''}${path ?? ''}`
+        : path
+
+      if (!_index.length && _path) {
+        const _route: PathRoutes = {
+          ...route,
+          path: _path
+        }
+        _routes.push(_route)
       }
+
+      const __routes: PathRoutes[] = formatRoutes(children, _path)
       _routes.push(...__routes)
     } else if (index && parent) {
       const _route: PathRoutes = {
@@ -48,5 +58,10 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
     }
   })
 
-  return _routes
+  return _routes.filter((item, index, arr) => {
+    return Equal.ValEqual(
+      arr.findIndex((v) => v.path === item.path, 0),
+      index
+    )
+  })
 }

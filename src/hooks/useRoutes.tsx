@@ -1,15 +1,18 @@
 import React from 'react'
-import Route, { RouteProps } from '../components/Route'
+import Route from '../components/Route'
 import formatRoutes from '../_utils/formatRoutes'
 
-export interface PathRoutes extends RouteProps {
+export interface PathRoutes {
+  path: string
   index?: true
+  component?: React.ReactElement | null
   children?: Routes
 }
 
-export interface IndexRoutes extends Omit<PathRoutes, 'path'> {
-  path?: string
+export interface IndexRoutes {
   index: true
+  path?: string
+  component?: React.ReactElement | null
   children?: Routes
 }
 
