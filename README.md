@@ -1,4 +1,4 @@
-﻿# [Single Router]
+﻿# Single Router
 
 ## 前言
 
