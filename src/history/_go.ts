@@ -1,32 +1,24 @@
 /// <reference types="../typing" />
 
 export default function go(delta: number) {
-  const history = window.router.history
-  const lastLocationIndex = window.router.index
-  let locationIndex = 0
+  const { history, index } = window.router
 
-  if (typeof lastLocationIndex === 'number') {
-    if (lastLocationIndex === history.length - 1) {
-      if (delta < 0 && lastLocationIndex + delta >= 0) {
-        locationIndex = lastLocationIndex + delta
-      } else {
-        locationIndex = lastLocationIndex
-      }
-    } else {
-      if (
-        (delta < 0 && lastLocationIndex + delta >= 0) ||
-        (delta > 0 && lastLocationIndex + delta <= history.length - 1)
-      ) {
-        locationIndex = lastLocationIndex + delta
-      }
-    }
+  let _index = index + delta
+
+  if (_index > index) {
+    _index = index
   }
 
-  const location = history[locationIndex]
+  if (_index < -1) {
+    _index = -1
+  }
+
+  const _pathname = _index === -1 ? '' : history[_index]
+  const _history = _index === -1 ? [] : history.slice(0, _index + 1)
 
   window.router = {
-    pathname: location,
-    history: history,
-    index: locationIndex
+    pathname: _pathname,
+    history: _history,
+    index: _index
   }
 }

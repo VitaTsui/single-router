@@ -4,44 +4,28 @@ export interface NavigateOptions {
   replace?: boolean
 }
 
-export default function push(path: string, options?: NavigateOptions) {
+export default function push(pathname: string, options?: NavigateOptions) {
   if (options?.replace) {
     window.router = {
-      pathname: path,
-      history: [path],
+      pathname,
+      history: [pathname],
       index: 0
     }
 
     return
   }
 
-  const location = path
-  const history = window.router.history
-  const locationIndex = history.indexOf(location)
+  const { history, index } = window.router
 
-  if (history.length > 0 && locationIndex !== -1 && locationIndex !== history.length - 1) {
-    window.router = {
-      pathname: location,
-      history: history.slice(0, locationIndex + 1),
-      index: locationIndex
-    }
-  } else if (history.length > 0) {
-    if (path !== history[history.length - 1]) {
-      history.push(path)
-    }
+  const lastHistory = history[index]
+
+  if (lastHistory !== pathname) {
+    history.push(pathname)
 
     window.router = {
-      pathname: location,
+      pathname,
       history: history,
       index: history.length - 1
-    }
-  } else if (history.length === 0) {
-    history.push(path)
-
-    window.router = {
-      pathname: location,
-      history: history,
-      index: 0
     }
   }
 }
