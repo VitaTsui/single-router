@@ -6,9 +6,20 @@ import getParams from '../_utils/getParams'
 import isNullNode from '../_utils/isNullNode'
 import getMatch from '../_utils/getMatch'
 
+Object.defineProperty(window, 'match', {
+  get: function () {
+    const value = this._match ?? []
+
+    return Object.freeze(value)
+  },
+  set: function (value: IRouter) {
+    this._match = Object.freeze(value)
+  }
+})
+
 export interface RouteProps {
   path: string
-  component: React.ReactElement
+  component?: React.ReactElement
 }
 
 const Route: React.FC<RouteProps> = (props) => {

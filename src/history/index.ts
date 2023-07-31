@@ -30,17 +30,6 @@ Object.defineProperty(window, 'router', {
   }
 })
 
-Object.defineProperty(window, 'match', {
-  get: function () {
-    const value = this._match ?? []
-
-    return Object.freeze(value)
-  },
-  set: function (value: IRouter) {
-    this._match = Object.freeze(value)
-  }
-})
-
 export function createHistory(): Navigator {
   const history: Navigator = {
     go,
