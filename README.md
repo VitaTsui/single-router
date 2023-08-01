@@ -1,4 +1,4 @@
-﻿# Single Router
+﻿# [Single Router](https://github.com/VitaTsui/single-router#single-router)
 
 ## 前言
 
@@ -23,16 +23,16 @@ yarn add @hsu-react/single-router
 ```react
 import React from "react";
 import App from "./App";
-import { Router } from "@hsu-react/single-router";
+import { SingleRouter } from "@hsu-react/single-router";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Router>
+    <SingleRouter>
       <App />
-    </Router>
+    </SingleRouter>
   </React.StrictMode>
 );
 ```

@@ -6,7 +6,7 @@ interface RSProps {
   children?: React.ReactNode
 }
 
-const Router: React.FC<RSProps> = (props) => {
+const SingleRouter: React.FC<RSProps> = (props) => {
   const { children } = props
   const [location, setLocation] = useState<IRouter>(window.router)
 
@@ -35,4 +35,4 @@ const Router: React.FC<RSProps> = (props) => {
   )
 }
 
-export default Router
+export default SingleRouter
