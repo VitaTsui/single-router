@@ -1,5 +1,5 @@
-import { Route, Router } from './components'
-export { Route, Router }
+import { Route, SingleRouter } from './components'
+export { Route, SingleRouter }
 
 import { useNavigate, useLocation, useParams, useRoutes } from './hooks'
 export { useNavigate, useLocation, useParams, useRoutes }

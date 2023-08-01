@@ -1,4 +1,4 @@
-﻿# Single Router
+﻿# [Single Router](https://github.com/VitaTsui/single-router#single-router)
 
 ## 前言
 
@@ -16,30 +16,30 @@ npm install --save @hsu-react/single-router
 yarn add @hsu-react/single-router
 ```
 
-## 使用
+## 组件
 
-### `<Router>`
+### `SingleRouter`
 
 ```react
 import React from "react";
 import App from "./App";
-import { Router } from "@hsu-react/single-router";
+import { SingleRouter } from "@hsu-react/single-router";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Router>
+    <SingleRouter>
       <App />
-    </Router>
+    </SingleRouter>
   </React.StrictMode>
 );
 ```
 
-### `<Route>`
+### `Route`
 
-#### 基本使用
+> #### 基本使用
 
 ```react
 import React from "react";
@@ -48,6 +48,7 @@ import { Route } from "@hsu-react/single-router";
 const App: React.FC = () => {
   return (
     <div className="App">
+      // 可通过 useRoutes 生成
       <Route path="/path1" component={<AppOne />} />
       <Route path="/path2" component={<AppTwo />} />
       ...
@@ -58,7 +59,7 @@ const App: React.FC = () => {
 export default App;
 ```
 
-#### 嵌套路由
+> #### 嵌套路由
 
 ```react
 import React from "react";
@@ -66,11 +67,11 @@ import { Route } from "@hsu-react/single-router";
 
 const AppOne: React.FC = () => {
   return (
-    <div className="App">
+    <div className="AppOne">
       // 1. 需要完整路由
-      // 2. 若想跳转 "/path1/path1-1" 需要先跳转 <AppOne />
-      // 3. <AppOneOne /> 加载至当前位置
-      // 4. 可通过 useRoutes 生成，同样需要保证路由完整
+      // 2. 若想跳转 "/path1/path1-1" 需要先进入 <AppOne />
+      // 3. 原地加载 <AppOneOne />
+      // 4. 可通过 useRoutes 生成
       <Route path="/path1/path1-1" component={<AppOneOne />} />
       ...
     </div>
@@ -80,9 +81,11 @@ const AppOne: React.FC = () => {
 export default AppOne;
 ```
 
+## HOOKS
+
 ### `useRoutes`
 
-根据路由树，生成路由
+`useRoutes` 可以根据路由树，生成路由
 
 ```react
 const ROUTERS: Routes = [
@@ -134,7 +137,7 @@ const App: React.FC = () => {
 
 ### `useNavigate`
 
-路由跳转
+通过 `useNavigate` 进行路由跳转
 
 ```react
 import React, { useEffect } from "react";
@@ -147,9 +150,13 @@ const App: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-      navigate("/path1");
-      // 后退
-      // navigate(-1)
+    // 跳转
+    // 跳转的路由会被记录在 history 中
+    navigate("/path1");
+
+    // 后退
+    // 当前路由会从 history 中删除
+    // navigate(-1)
   }, [navigate]);
 
   ...
@@ -159,7 +166,7 @@ const App: React.FC = () => {
 
 ### `useLocation`
 
-获取当前路由
+使用 `useLocation` 获取当前路由
 
 ```react
 import React, { useEffect } from "react";
@@ -185,7 +192,7 @@ const App: React.FC = () => {
 
 ### `useParams`
 
-获取动态路由参数
+使用 `useParams` 获取动态路由参数
 
 ```react
 import React, { useEffect } from "react";
