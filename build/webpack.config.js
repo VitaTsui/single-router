@@ -35,7 +35,7 @@ const config = {
   },
   plugins: [
     new webpack.BannerPlugin(
-      `\nlc-web-tools v${pkg.version} \n\n${pkg.description} \n\n${fs.readFileSync(path.join(process.cwd(), 'LICENSE'))}`
+      `\nsingle-router v${pkg.version} \n\n${pkg.description} \n\n${fs.readFileSync(path.join(process.cwd(), 'LICENSE'))}`
     ),
   ],
   optimization: {
