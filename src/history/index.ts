@@ -38,3 +38,5 @@ export function createHistory(): Navigator {
 
   return history
 }
+
+export const routerHistory = createHistory()
