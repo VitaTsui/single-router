@@ -8,11 +8,8 @@ interface MatchData {
   paramKeys: string[]
 }
 
-export default function setMatch({ match, path, basicName, paramKeys }: MatchData): Match {
-  let _match = deepCopy(match)
-  if (!_match) {
-    _match = []
-  }
+export default function setMatch({ match, path, basicName, paramKeys }: MatchData) {
+  const _match = deepCopy(match ?? [])
 
   if (paramKeys.length > 0) {
     path = path + '/:' + paramKeys.join('/:')
@@ -38,5 +35,5 @@ export default function setMatch({ match, path, basicName, paramKeys }: MatchDat
     _match.push(__match)
   }
 
-  return _match
+  window.match = _match
 }

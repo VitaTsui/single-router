@@ -1,18 +1,19 @@
-import go from './_go'
-import push, { NavigateOptions } from './_push'
+import go, { GoOptions } from './_go'
+import push, { PushOptions } from './_push'
 import { Equal } from 'hsu-utils'
 
 export interface Navigator {
-  go(delta: number): void
-  push(to: string, options?: NavigateOptions): void
+  go(delta: number, options?: GoOptions): void
+  push(to: string, options?: PushOptions): void
 }
 
 Object.defineProperty(window, 'router', {
   get: function () {
     const value = this._router ?? {
-      pathname: '',
-      history: [],
-      index: -1
+      pathname: '/',
+      history: ['/'],
+      search: [{}],
+      index: 0
     }
 
     return Object.freeze(value)

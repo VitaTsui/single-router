@@ -1,23 +1,24 @@
 import { useCallback, useContext } from 'react'
 import { NavigationContext } from '../contexts'
-import { NavigateOptions } from '../history/_push'
+import { PushOptions } from '../history/_push'
+import { GoOptions } from '../history/_go'
 
 interface NavigateFunction {
-  (to: string | number, options?: NavigateOptions): void
+  (to: string | number, options?: PushOptions | GoOptions): void
 }
 
 export default function useNavigate(): NavigateFunction {
-  const navigator = useContext(NavigationContext)?.navigator
+  const navigator = useContext(NavigationContext).navigator
 
   const navigate: NavigateFunction = useCallback(
-    (to: string | number, options?: NavigateOptions) => {
+    (to: string | number, options?: PushOptions | GoOptions) => {
       if (typeof to === 'number') {
-        navigator.go(to)
+        navigator.go(to, options as GoOptions)
         return
       }
 
       if (!to.startsWith('/')) to = `/${to}`
-      navigator.push(to, options)
+      navigator.push(to, options as PushOptions)
     },
     [navigator]
   )

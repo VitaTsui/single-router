@@ -1,24 +1,31 @@
 /// <reference types="../typing" />
 
-export default function go(delta: number) {
-  const { history, index } = window.router
+export interface GoOptions {
+  replace?: boolean
+}
 
-  let _index = index + delta
+export default function go(delta: number, options?: GoOptions) {
+  const { history, index, search } = window.router
 
-  if (_index > index) {
-    _index = index
+  const _index = index + delta
+
+  if (_index > history.length - 1 || _index < 0) {
+    return
   }
 
-  if (_index < -1) {
-    _index = -1
-  }
+  const _pathname = history[_index]
 
-  const _pathname = _index === -1 ? '' : history[_index]
-  const _history = _index === -1 ? [] : history.slice(0, _index + 1)
+  let _history = history
+  let _search = search
+  if (options?.replace) {
+    _history = history.slice(0, _index + 1)
+    _search = _search.slice(0, _index + 1)
+  }
 
   window.router = {
     pathname: _pathname,
     history: _history,
+    search: _search,
     index: _index
   }
 }
