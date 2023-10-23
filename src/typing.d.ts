@@ -7,9 +7,12 @@ declare type Match = Array<MatchItem>
 
 declare type Params = Record<string, string | undefined>
 
+declare type Search = Record<string, string | undefined>
+
 declare interface IRouter {
   pathname: string
-  history: string[]
+  history: Array<string>
+  search: Array<Search>
   index: number
 }
 

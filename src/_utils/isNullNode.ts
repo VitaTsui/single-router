@@ -27,7 +27,7 @@ export default function isNullNode({ location, path, paramKeys, match, params }:
     }
   }
 
-  if (isNull && match) {
+  if (isNull && match.length > 0) {
     const _match = match.find((item) => {
       const path = item.path
 
