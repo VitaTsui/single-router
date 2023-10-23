@@ -88,6 +88,8 @@ export default AppOne;
 `useRoutes` 可以根据路由树，生成路由
 
 ```react
+import { Routes } from "@hsu-react/single-router";
+
 const ROUTERS: Routes = [
   {
     path: "/path1",
@@ -153,10 +155,16 @@ const App: React.FC = () => {
     // 跳转
     // 跳转的路由会被记录在 history 中
     navigate("/path1");
+    // 将history重置并跳转
+    navigate("/path1", { replace: true });
 
-    // 后退
-    // 当前路由会从 history 中删除
+    // 前进 | 后退
+    // 若超出history的范围，则不会被执行
+    // navigate(1)
     // navigate(-1)
+    // 会将其后的路由都将从 history 中删除
+    // navigate(1, { replace: true })
+    // navigate(-1 , { replace: true })
   }, [navigate]);
 
   ...
@@ -204,6 +212,30 @@ const App: React.FC = () => {
 
   // return {id: string | undefined}
   const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    console.log(id);
+  }, [id]);
+
+  ...
+};
+
+```
+
+### `useSearch`
+
+使用 `useSearch` 获取查询参数参数
+
+```react
+import React, { useEffect } from "react";
+import { useSearch } from "@hsu-react/single-router";
+...
+
+const App: React.FC = () => {
+  ...
+
+  // return {id: string | undefined}
+  const { id } = useSearch<{ id: string }>();
 
   useEffect(() => {
     console.log(id);
