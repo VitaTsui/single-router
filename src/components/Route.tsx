@@ -38,7 +38,7 @@ const Route: React.FC<RouteProps> = (props) => {
 
   const _params = useMemo(() => getParams(pathname, paramKeys), [pathname, paramKeys])
 
-  const _search = useMemo(() => search[index] ?? {}, [search, index])
+  const _search = useMemo(() => search[index], [search, index])
 
   if (isNull) return null
 

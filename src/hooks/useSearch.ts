@@ -13,17 +13,12 @@ export default function useSearch<T extends Partial<T>>(): [
 
   const setSearch = (search: Search, options: SetSearchOptions = {}) => {
     const { history, pathname, search: _search, index } = window.router
-    const { replace } = options
+    const { replace = true } = options
 
     if (replace) {
       _search[index] = search
 
-      window.router = {
-        pathname,
-        history,
-        index,
-        search: _search
-      }
+      window.router = { ...window.router, search: _search }
     } else {
       _search.push(search)
       history.push(pathname)
