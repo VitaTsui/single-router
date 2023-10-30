@@ -5,11 +5,8 @@ interface SetSearchOptions {
   replace?: boolean
 }
 
-export default function useSearch<T extends Partial<T>>(): [
-  Search | T,
-  (search: Search, options?: SetSearchOptions) => void
-] {
-  const search = useContext(SearchContext).search
+export default function useSearch<T extends Partial<T>>(): [T, (search: T, options?: SetSearchOptions) => void] {
+  const search = useContext(SearchContext).search as T
 
   const setSearch = (search: Search, options: SetSearchOptions = {}) => {
     const { history, pathname, search: _search, index } = window.router
