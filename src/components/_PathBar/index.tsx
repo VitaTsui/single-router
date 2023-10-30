@@ -49,7 +49,7 @@ const PathBar: React.FC = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
-            columnGap: '10px'
+            columnGap: '5px'
           }}
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
@@ -63,7 +63,7 @@ const PathBar: React.FC = () => {
             pointerEvents: 'none',
             width: `${get_string_width(fullPath) * 14 + 20}px`,
             height: '100%',
-            padding: '0 15px',
+            padding: '0 10px',
             fontSize: '14px',
             color: '#333333',
             background: '#E0E0E0',
