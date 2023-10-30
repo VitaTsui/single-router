@@ -7,7 +7,7 @@ declare type Match = Array<MatchItem>
 
 declare type Params = Record<string, string | undefined>
 
-declare type Search = Record<string, string | undefined>
+declare type Search = Record<string, unknown>
 
 declare interface IRouter {
   pathname: string

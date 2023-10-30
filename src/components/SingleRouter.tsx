@@ -1,13 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { NavigationContext, LocationContext } from '../contexts'
 import { createHistory } from '../history'
+import PathBar from './_PathBar'
 
 interface RSProps {
   children?: React.ReactNode
+  showPath?: boolean
 }
 
 const SingleRouter: React.FC<RSProps> = (props) => {
-  const { children } = props
+  const { children, showPath = true } = props
   const [location, setLocation] = useState<IRouter>(window.router)
 
   const locationContext = useMemo(() => {
@@ -30,7 +32,10 @@ const SingleRouter: React.FC<RSProps> = (props) => {
 
   return (
     <NavigationContext.Provider value={{ navigator: createHistory() }}>
-      <LocationContext.Provider value={locationContext}>{children}</LocationContext.Provider>
+      <LocationContext.Provider value={locationContext}>
+        {process.env.NODE_ENV === 'development' && showPath && <PathBar />}
+        {children}
+      </LocationContext.Provider>
     </NavigationContext.Provider>
   )
 }
