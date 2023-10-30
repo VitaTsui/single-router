@@ -30,7 +30,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <SingleRouter>
+    // showPath 默认为true 控制路由框是否展示 仅在开发环境作用
+    <SingleRouter showPath={true}>
       <App />
     </SingleRouter>
   </React.StrictMode>
@@ -235,10 +236,15 @@ const App: React.FC = () => {
   ...
 
   // return {id: string | undefined}
-  const { id } = useSearch<{ id: string }>();
+  const [{ id }, setSearch] = useSearch<{ id: string }>();
 
   useEffect(() => {
     console.log(id);
+
+    // 修改当前路由search, 并新增一条记录
+    setSearch({id: [1]})
+    // 修改当前路由search, 历史路由记录不变
+    setSearch({id: [1]}, { replace: true })
   }, [id]);
 
   ...
