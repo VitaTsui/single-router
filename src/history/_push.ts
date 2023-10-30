@@ -14,7 +14,7 @@ function getSearch(pathname: string) {
       if (!key || !value) {
         continue
       }
-      search[key] = value
+      search[key] = JSON.parse(value)
     }
   }
   return search
@@ -35,22 +35,18 @@ export default function push(pathname: string, options?: PushOptions) {
     return
   }
 
-  const { history, index, search } = window.router
+  const { history, search } = window.router
 
-  const lastHistory = history[index]
   const _pathname = pathname.split('?')[0]
+  history.push(_pathname)
 
-  if (lastHistory !== _pathname) {
-    history.push(_pathname)
+  const _search = getSearch(pathname)
+  search.push(_search)
 
-    const _search = getSearch(pathname)
-    search.push(_search)
-
-    window.router = {
-      pathname: _pathname,
-      history,
-      index: history.length - 1,
-      search
-    }
+  window.router = {
+    pathname: _pathname,
+    history,
+    index: history.length - 1,
+    search
   }
 }
