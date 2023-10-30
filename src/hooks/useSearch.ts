@@ -5,7 +5,10 @@ interface SetSearchOptions {
   replace?: boolean
 }
 
-export default function useSearch<T extends Partial<T>>(): [Search | T, (search: Search) => void] {
+export default function useSearch<T extends Partial<T>>(): [
+  Search | T,
+  (search: Search, options?: SetSearchOptions) => void
+] {
   const search = useContext(SearchContext).search
 
   const setSearch = (search: Search, options: SetSearchOptions = {}) => {
