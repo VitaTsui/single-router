@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
-import { useLocation } from '../..'
+import { useLocation, useNavigate } from '../..'
 import ReactDOM from 'react-dom'
 import { get_string_width } from 'hsu-utils'
+import Icon from './Icon'
 
 const PathBar: React.FC = () => {
   useEffect(() => {
@@ -11,8 +12,9 @@ const PathBar: React.FC = () => {
     }
   }, [])
 
-  const Input: React.FC = () => {
-    const { pathname, search, index } = useLocation()
+  const Bar: React.FC = () => {
+    const navigate = useNavigate()
+    const { pathname, search, index, history } = useLocation()
 
     const _search = search[index] as Record<string, unknown>
 
@@ -23,33 +25,59 @@ const PathBar: React.FC = () => {
     const fullPath = `${pathname}${fullSearch ? '?' + fullSearch : ''}`
 
     return (
-      <input
-        type='text'
+      <div
         id='path-bar'
         style={{
-          outline: 'none',
-          fontSize: '14px',
-          color: '#31455c',
-          backgroundColor: 'rgba(#f1f3f7, .5)',
-          border: '1px solid #489dff',
-          borderRadius: '5px',
-          height: '32px',
-          padding: '0 10px',
           boxSizing: 'border-box',
-          pointerEvents: 'none',
+          padding: '2px 10px',
           position: 'fixed',
           left: '5px',
           top: '5px',
           zIndex: '9999',
-          width: `${get_string_width(fullPath) * 14 + 20}px`
+          display: 'flex',
+          alignItems: 'center',
+          columnGap: '10px',
+          height: '32px',
+          width: 'max-content',
+          fontFamily: '微软雅黑',
+          background: 'rgba(#f1f3f7)',
+          border: '1px solid #aaa',
+          borderRadius: '5px'
         }}
-        disabled
-        value={fullPath}
-      />
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            columnGap: '10px'
+          }}
+        >
+          <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
+          <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
+        </div>
+        <input
+          type='text'
+          style={{
+            outline: 'none',
+            boxSizing: 'border-box',
+            pointerEvents: 'none',
+            width: `${get_string_width(fullPath) * 14 + 20}px`,
+            height: '100%',
+            padding: '0 15px',
+            fontSize: '14px',
+            color: '#333333',
+            background: '#E0E0E0',
+            borderRadius: '5px',
+            border: '1px solid #E0E0E0'
+          }}
+          disabled
+          value={fullPath}
+        />
+      </div>
     )
   }
 
-  return ReactDOM.createPortal(<Input />, document.body)
+  return ReactDOM.createPortal(<Bar />, document.body)
 }
 
 export default PathBar
