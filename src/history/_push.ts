@@ -1,5 +1,7 @@
 /// <reference types="../typing" />
 
+import { Equal } from 'hsu-utils'
+
 export interface PushOptions {
   replace?: boolean
 }
@@ -35,18 +37,29 @@ export default function push(pathname: string, options?: PushOptions) {
     return
   }
 
-  const { history, search } = window.router
+  const { history, index, search } = window.router
 
+  const lastHistory = history[index]
   const _pathname = pathname.split('?')[0]
-  history.push(_pathname)
-
   const _search = getSearch(pathname)
-  search.push(_search)
 
-  window.router = {
-    pathname: _pathname,
-    history,
-    index: history.length - 1,
-    search
+  if (lastHistory !== _pathname) {
+    history.push(_pathname)
+
+    search.push(_search)
+
+    window.router = {
+      pathname: _pathname,
+      history,
+      index: history.length - 1,
+      search
+    }
+  } else if (!Equal.ObjEqual(search[index], _search)) {
+    search[index] = _search
+
+    window.router = {
+      ...window.router,
+      search
+    }
   }
 }
