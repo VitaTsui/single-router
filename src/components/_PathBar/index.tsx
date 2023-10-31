@@ -40,7 +40,7 @@ const PathBar: React.FC = () => {
           height: '32px',
           width: 'max-content',
           fontFamily: '微软雅黑',
-          background: 'rgba(#f1f3f7)',
+          backgroundColor: '#fff',
           border: '1px solid #aaa',
           borderRadius: '5px'
         }}
