@@ -61,7 +61,7 @@ const PathBar: React.FC = () => {
             outline: 'none',
             boxSizing: 'border-box',
             pointerEvents: 'none',
-            width: `${get_string_width(fullPath) * 28 + 20}px`,
+            width: `${get_string_width(fullPath) * 14 + 40}px`,
             height: '100%',
             padding: '0 10px',
             fontSize: '14px',
