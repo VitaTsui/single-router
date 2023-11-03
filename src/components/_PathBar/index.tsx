@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from '../..'
 import ReactDOM from 'react-dom'
-import { get_string_width } from 'hsu-utils'
+import { deepCopy, get_string_width } from 'hsu-utils'
 import Icon from './Icon'
 
 const PathBar: React.FC = () => {
@@ -54,7 +54,7 @@ const PathBar: React.FC = () => {
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
           <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
-          <Icon.Refresh onClick={() => navigate(fullPath)} />
+          <Icon.Refresh onClick={() => (window.router = deepCopy(window.router))} />
         </div>
         <input
           type='text'
