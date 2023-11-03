@@ -35,13 +35,18 @@ export default function push(pathname: string, options?: PushOptions) {
     return
   }
 
-  const { history, search } = window.router
+  const { history, search, index } = window.router
 
   const _pathname = pathname.split('?')[0]
-  history.push(_pathname)
-
   const _search = getSearch(pathname)
-  search.push(_search)
+
+  if (index !== history.length - 1) {
+    history.splice(index + 1, history.length, _pathname)
+    search.splice(index + 1, history.length, _search)
+  } else {
+    history.push(_pathname)
+    search.push(_search)
+  }
 
   window.router = {
     pathname: _pathname,

@@ -54,6 +54,7 @@ const PathBar: React.FC = () => {
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
           <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
+          <Icon.Refresh onClick={() => navigate(fullPath)} />
         </div>
         <input
           type='text'
