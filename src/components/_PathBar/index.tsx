@@ -54,6 +54,7 @@ const PathBar: React.FC = () => {
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
           <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
+          <Icon.Refresh onClick={() => navigate(fullPath)} />
         </div>
         <input
           type='text'
@@ -61,7 +62,7 @@ const PathBar: React.FC = () => {
             outline: 'none',
             boxSizing: 'border-box',
             pointerEvents: 'none',
-            width: `${get_string_width(fullPath) * 28 + 20}px`,
+            width: `${get_string_width(fullPath) * 14 + 40}px`,
             height: '100%',
             padding: '0 10px',
             fontSize: '14px',
