@@ -19,4 +19,5 @@ declare interface IRouter {
 declare interface Window {
   router: IRouter
   match: Match
+  refresh: boolean
 }

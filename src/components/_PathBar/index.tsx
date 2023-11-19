@@ -4,6 +4,23 @@ import ReactDOM from 'react-dom'
 import { deepCopy, get_string_width } from 'hsu-utils'
 import Icon from './Icon'
 
+Object.defineProperty(window, 'refresh', {
+  get: function () {
+    const value = this._refresh ?? false
+
+    return value
+  },
+  set: function (value: boolean) {
+    const customEvent = new CustomEvent<boolean>('refreshChange', {
+      detail: value,
+      bubbles: false
+    })
+    window.dispatchEvent(customEvent)
+
+    this._refresh = value
+  }
+})
+
 const PathBar: React.FC = () => {
   useEffect(() => {
     return () => {
@@ -54,7 +71,12 @@ const PathBar: React.FC = () => {
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
           <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
-          <Icon.Refresh onClick={() => (window.router = deepCopy(window.router))} />
+          <Icon.Refresh
+            onClick={() => {
+              window.router = deepCopy(window.router)
+              window.refresh = true
+            }}
+          />
         </div>
         <input
           type='text'
