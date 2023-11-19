@@ -6,9 +6,10 @@ interface NodeInfo {
   paramKeys: string[]
   match: Match
   params: Params
+  refresh: boolean
 }
 
-export default function isNullNode({ location, path, paramKeys, match, params }: NodeInfo): boolean {
+export default function isNullNode({ location, path, paramKeys, match, params, refresh }: NodeInfo): boolean {
   if (Object.keys(params ?? {})?.length > 0) {
     throw new Error('Nesting in dynamic routes is not allowed.')
   }
@@ -41,6 +42,10 @@ export default function isNullNode({ location, path, paramKeys, match, params }:
     if (_match && _match.includes(path)) {
       isNull = false
     }
+  }
+
+  if (!isNull) {
+    isNull = refresh
   }
 
   return isNull

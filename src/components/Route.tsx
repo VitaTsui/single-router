@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation, useParams } from '../hooks'
 import { ParamsContext, SearchContext } from '../contexts'
 import formatRoute from '../_utils/formatRoute'
@@ -12,7 +12,7 @@ Object.defineProperty(window, 'match', {
 
     return Object.freeze(value)
   },
-  set: function (value: IRouter) {
+  set: function (value: Match) {
     this._match = Object.freeze(value)
   }
 })
@@ -26,10 +26,11 @@ const Route: React.FC<RouteProps> = (props) => {
   const { path, component, paramKeys } = formatRoute(props)
   const { pathname, search, index } = useLocation()
   const params = useParams()
+  const [refresh, setRefresh] = useState<boolean>(false)
 
   const isNull = useMemo(
-    () => isNullNode({ location: pathname, path, paramKeys, match: window.match, params }),
-    [pathname, paramKeys, params, path]
+    () => isNullNode({ location: pathname, path, paramKeys, match: window.match, params, refresh }),
+    [pathname, paramKeys, params, path, refresh]
   )
 
   useEffect(() => {
@@ -39,6 +40,19 @@ const Route: React.FC<RouteProps> = (props) => {
   const _params = useMemo(() => getParams(pathname, paramKeys), [pathname, paramKeys])
 
   const _search = useMemo(() => search[index], [search, index])
+
+  useEffect(() => {
+    window.addEventListener('refreshChange', (e: Event) => {
+      const refresh = (e as CustomEvent).detail
+      setRefresh(refresh)
+
+      if (refresh) {
+        setTimeout(() => {
+          window.refresh = false
+        }, 300)
+      }
+    })
+  }, [])
 
   if (isNull) return null
 
