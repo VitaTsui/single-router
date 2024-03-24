@@ -20,6 +20,7 @@ export type Routes = Array<PathRoutes | IndexRoutes>
 
 export default function useRoutes(routes: Routes) {
   const _routes = formatRoutes(routes)
+
   return (
     <>
       {_routes.map((route, index) => (
