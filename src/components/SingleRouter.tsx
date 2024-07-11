@@ -3,6 +3,17 @@ import { NavigationContext, LocationContext } from '../contexts'
 import { createHistory } from '../history'
 import PathBar from './_PathBar'
 
+Object.defineProperty(window, 'match', {
+  get: function () {
+    const value = this._match ?? []
+
+    return Object.freeze(value)
+  },
+  set: function (value: Match) {
+    this._match = Object.freeze(value)
+  }
+})
+
 interface RSProps {
   children?: React.ReactNode
   showPath?: boolean

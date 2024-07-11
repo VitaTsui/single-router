@@ -14,7 +14,12 @@ function getSearch(pathname: string) {
       if (!key || !value) {
         continue
       }
-      search[key] = JSON.parse(value)
+
+      try {
+        search[key] = JSON.parse(value)
+      } catch {
+        search[key] = value
+      }
     }
   }
   return search

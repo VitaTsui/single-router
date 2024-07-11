@@ -4,18 +4,7 @@ import { ParamsContext, SearchContext } from '../contexts'
 import formatRoute from '../_utils/formatRoute'
 import getParams from '../_utils/getParams'
 import isNullNode from '../_utils/isNullNode'
-import getMatch from '../_utils/getMatch'
-
-Object.defineProperty(window, 'match', {
-  get: function () {
-    const value = this._match ?? []
-
-    return Object.freeze(value)
-  },
-  set: function (value: Match) {
-    this._match = Object.freeze(value)
-  }
-})
+import setMatch from '../_utils/setMatch'
 
 export interface RouteProps {
   path: string
@@ -34,7 +23,7 @@ const Route: React.FC<RouteProps> = (props) => {
   )
 
   useEffect(() => {
-    getMatch({ match: window.match, path, basicName: pathname, paramKeys })
+    setMatch({ match: window.match, path, basicName: pathname, paramKeys })
   }, [path, pathname, paramKeys])
 
   const _params = useMemo(() => getParams(pathname, paramKeys), [pathname, paramKeys])

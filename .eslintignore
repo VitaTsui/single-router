@@ -1,4 +1,7 @@
 node_modules/*
+dist/*
+es/*
+lib/*
 build/*
 config-overrides.js
 typing.d.ts
