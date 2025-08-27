@@ -2,12 +2,12 @@ import { RouteProps } from '../components/Route'
 
 interface Route {
   path: string
-  component?: React.ReactElement | null
+  element?: React.ReactElement | null
   paramKeys: Array<string>
 }
 
 export default function formatRoute(route: RouteProps): Route {
-  const { path, component } = route
+  const { path, element } = route
 
   let _path = path.replace(/(\/):(\w+)/gi, '')
   if (!_path.startsWith('/')) _path = `/${_path}`
@@ -15,7 +15,7 @@ export default function formatRoute(route: RouteProps): Route {
   const paramKeys = (path.match(/:(\w+)/g) || []).map((key: string) => key.split(':')[1])
 
   const _route: Route = {
-    component,
+    element,
     path: _path,
     paramKeys: paramKeys
   }

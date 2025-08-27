@@ -10,7 +10,7 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
   }
 
   routes.forEach((route) => {
-    const { children, path, index, component } = route
+    const { children, path, index, element } = route
 
     if (children) {
       const _index = children.filter((route) => route?.index)
@@ -39,7 +39,7 @@ export default function formatRoutes(routes: Routes, parent?: string): PathRoute
     } else if (index && parent) {
       const _route: PathRoutes = {
         path: parent,
-        component
+        element
       }
       _routes.push(_route)
     } else if (!index) {

@@ -8,11 +8,11 @@ import setMatch from '../_utils/setMatch'
 
 export interface RouteProps {
   path: string
-  component?: React.ReactElement | null
+  element?: React.ReactElement | null
 }
 
 const Route: React.FC<RouteProps> = (props) => {
-  const { path, component, paramKeys } = formatRoute(props)
+  const { path, element, paramKeys } = formatRoute(props)
   const { pathname, search, index } = useLocation()
   const params = useParams()
   const [refresh, setRefresh] = useState<boolean>(false)
@@ -47,7 +47,7 @@ const Route: React.FC<RouteProps> = (props) => {
 
   return (
     <ParamsContext.Provider value={{ params: _params }}>
-      <SearchContext.Provider value={{ search: _search }}>{component}</SearchContext.Provider>
+      <SearchContext.Provider value={{ search: _search }}>{element}</SearchContext.Provider>
     </ParamsContext.Provider>
   )
 }

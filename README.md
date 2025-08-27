@@ -50,8 +50,8 @@ const App: React.FC = () => {
   return (
     <div className="App">
       // 可通过 useRoutes 生成
-      <Route path="/path1" component={<AppOne />} />
-      <Route path="/path2" component={<AppTwo />} />
+      <Route path="/path1" element={<AppOne />} />
+      <Route path="/path2" element={<AppTwo />} />
       ...
     </div>
   );
@@ -73,7 +73,7 @@ const AppOne: React.FC = () => {
       // 2. 若想跳转 "/path1/path1-1" 需要先进入 <AppOne />
       // 3. 原地加载 <AppOneOne />
       // 4. 可通过 useRoutes 生成
-      <Route path="/path1/path1-1" component={<AppOneOne />} />
+      <Route path="/path1/path1-1" element={<AppOneOne />} />
       ...
     </div>
   );
@@ -94,11 +94,11 @@ import { Routes } from "@hsu-react/single-router";
 const ROUTERS: Routes = [
   {
     path: "/path1",
-    component: <AppOne />,
+    element: <AppOne />,
   },
   {
     path: "/path2",
-    component: <AppTwo />,
+    element: <AppTwo />,
   },
   {
     path: "/path3",
@@ -106,13 +106,13 @@ const ROUTERS: Routes = [
     children: [
       {
         index: true, // 相当于 'path: "/path3"'
-        component: <AppThree />,
+        element: <AppThree />,
       },
       {
         // path: "/path3/:id",
         // 或
         path: "/:id", // 会自动添加 "/path3"，相当于 "/path3/:id"
-        component: <AppThreeOne />,
+        element: <AppThreeOne />,
       },
     ]
   },

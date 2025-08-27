@@ -5,14 +5,14 @@ import formatRoutes from '../_utils/formatRoutes'
 export interface PathRoutes {
   path: string
   index?: true
-  component?: React.ReactElement | null
+  element?: React.ReactElement | null
   children?: Routes
 }
 
 export interface IndexRoutes {
   index: true
   path?: string
-  component?: React.ReactElement | null
+  element?: React.ReactElement | null
   children?: Routes
 }
 
