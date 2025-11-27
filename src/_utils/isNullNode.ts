@@ -19,8 +19,8 @@ export default function isNullNode({ location, path, paramKeys, match, params, r
   isNull = !location.includes(path)
 
   if (!isNull) {
-    const _locationPart = location.split('/')
-    const _pathPart = path.split('/')
+    const _locationPart = location.split('/').filter(Boolean)
+    const _pathPart = path.split('/').filter(Boolean)
     const isLengthEqual = _locationPart.length === _pathPart.length + paramKeys.length
 
     if (!isLengthEqual) {

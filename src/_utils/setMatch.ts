@@ -12,7 +12,7 @@ export default function setMatch({ match, path, basicName, paramKeys }: MatchDat
   const _match = deepCopy(match ?? [])
 
   if (paramKeys.length > 0) {
-    path = path + '/:' + paramKeys.join('/:')
+    path = path.replace(/\/$/, '') + '/:' + paramKeys.join('/:')
   }
 
   const __match = _match.find((item) => item.path === path)
