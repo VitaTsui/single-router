@@ -28,6 +28,7 @@ const SingleRouter: React.FC<RSProps> = (props) => {
   }, [location])
 
   const setLocalEvent = (e: Event) => {
+    window.match = []
     const location = (e as CustomEvent).detail
     setLocation(location)
   }
