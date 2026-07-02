@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { useLocation, useParams } from '../hooks'
-import { ParamsContext, SearchContext } from '../contexts'
+import { ParamsContext, RouterContext, SearchContext } from '../contexts'
 import formatRoute from '../_utils/formatRoute'
 import getParams from '../_utils/getParams'
 import isNullNode from '../_utils/isNullNode'
@@ -13,35 +13,23 @@ export interface RouteProps {
 
 const Route: React.FC<RouteProps> = (props) => {
   const { path, element, paramKeys } = formatRoute(props)
+  const store = useContext(RouterContext)
   const { pathname, search, index } = useLocation()
   const params = useParams()
-  const [refresh, setRefresh] = useState<boolean>(false)
+  const refresh = useSyncExternalStore(store.subscribe, store.getRefreshing)
 
   const isNull = useMemo(
-    () => isNullNode({ location: pathname, path, paramKeys, match: window.match, params, refresh }),
-    [pathname, paramKeys, params, path, refresh]
+    () => isNullNode({ location: pathname, path, paramKeys, match: store.getMatch(), params, refresh }),
+    [pathname, paramKeys, params, path, refresh, store]
   )
 
   useEffect(() => {
-    setMatch({ match: window.match, path, basicName: pathname, paramKeys })
-  }, [path, pathname, paramKeys])
+    store.setMatch(setMatch({ match: store.getMatch(), path, basicName: pathname, paramKeys }))
+  }, [path, pathname, paramKeys, store])
 
   const _params = useMemo(() => getParams(pathname, paramKeys), [pathname, paramKeys])
 
   const _search = useMemo(() => search[index], [search, index])
-
-  useEffect(() => {
-    window.addEventListener('refreshChange', (e: Event) => {
-      const refresh = (e as CustomEvent).detail
-      setRefresh(refresh)
-
-      if (refresh) {
-        setTimeout(() => {
-          window.refresh = false
-        }, 300)
-      }
-    })
-  }, [])
 
   if (isNull) return null
 

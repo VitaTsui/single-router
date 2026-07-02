@@ -38,6 +38,32 @@ root.render(
 );
 ```
 
+> #### 路由隔离（isolate）
+
+默认情况下所有 `SingleRouter` 共享同一份全局路由状态（并持久化到 localStorage）。
+传入 `isolate` 后，该路由树持有**独立的路由状态**，与其他 SingleRouter（含全局实例）互不影响——
+适合在不同页面 / 弹窗内各自嵌一套局部路由：
+
+```react
+// 页面 A 与页面 B 的局部路由互不干扰
+<SingleRouter isolate>
+  <PageARoutes />
+</SingleRouter>
+
+<SingleRouter isolate>
+  <PageBRoutes />
+</SingleRouter>
+```
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| isolate | 创建独立路由状态（路由隔离） | `boolean` | `false` |
+| persistKey | isolate 下持久化到 localStorage `single-router:state:<persistKey>`；不传则状态只存在内存，卸载即消失 | `string` | - |
+| initialPath | isolate 下的初始路径 | `string` | `'/'` |
+| showPath | 开发环境路径栏；isolate 实例默认关闭（多实例会互相遮挡） | `boolean` | `!isolate` |
+
+> 注意：`routerHistory`（组件树外导航）只作用于**默认全局实例**，isolate 实例请在组件内用 `useNavigate`。
+
 ### `Route`
 
 > #### 基本使用
@@ -102,7 +128,7 @@ const ROUTERS: Routes = [
   },
   {
     path: "/path3",
-    // children 中的路由平级, 且与 "/path1"、"/path2" 平级
+    element: <AppThreeLayout />, // 父级布局，内部用 <Outlet /> 渲染匹配的子路由
     children: [
       {
         index: true, // 相当于 'path: "/path3"'
@@ -121,6 +147,33 @@ const ROUTERS: Routes = [
 
 export default ROUTERS;
 ```
+
+### `Outlet`
+
+带 `children` 的路由中，父级 `element` 通过 `<Outlet />` 渲染当前匹配的子路由（嵌套布局）：
+
+```react
+import { Outlet, useOutletContext } from "@hsu-react/single-router";
+
+const AppThreeLayout: React.FC = () => {
+  return (
+    <div>
+      <header>公共头部</header>
+      {/* 透传给子路由的值（可选） */}
+      <Outlet context={{ msg: "from-layout" }} />
+    </div>
+  );
+};
+
+// 子路由内读取 Outlet 透传的值
+const AppThree: React.FC = () => {
+  const { msg } = useOutletContext<{ msg: string }>();
+  return <div>{msg}</div>;
+};
+```
+
+- 支持多级嵌套（children 里再有 children，逐层 `<Outlet />`）
+- 父路径含动态段（如 `/users/:id`）时，父 `element` 与子路由内都可用 `useParams` 取到参数
 
 ```react
 import { useRoutes } from "@hsu-react/single-router";

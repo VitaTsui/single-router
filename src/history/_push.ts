@@ -25,38 +25,58 @@ function getSearch(pathname: string) {
   return search
 }
 
-export default function push(pathname: string, options?: PushOptions) {
-  if (options?.replace) {
-    const _pathname = pathname.split('?')[0]
-    const _search = getSearch(pathname)
-
-    window.router = {
-      index: 1,
-      pathname: _pathname,
-      history: ['/', _pathname],
-      search: [{}, _search]
-    }
-
-    return
-  }
-
-  const { history, search, index } = window.router
-
+/** 纯函数：基于当前状态计算 push 后的新状态 */
+export default function push(state: IRouter, pathname: string, options?: PushOptions): IRouter {
   const _pathname = pathname.split('?')[0]
   const _search = getSearch(pathname)
 
-  if (index !== history.length - 1) {
-    history.splice(index + 1, history.length, _pathname)
-    search.splice(index + 1, history.length, _search)
-  } else {
-    history.push(_pathname)
-    search.push(_search)
+  const { history, search, index } = state
+
+  if (options?.replace) {
+    if (index === -1) {
+      // 空历史，直接写入第一条
+      return {
+        index: 0,
+        pathname: _pathname,
+        history: [_pathname],
+        search: [_search]
+      }
+    }
+
+    const newHistory = [...history]
+    const newSearch = [...search]
+    newHistory.splice(index, 1, _pathname)
+    newSearch.splice(index, 1, _search)
+    return {
+      index,
+      pathname: _pathname,
+      history: newHistory,
+      search: newSearch
+    }
   }
 
-  window.router = {
+  // 如果目标路径已存在于历史中，回退到该位置并截断后续历史
+  const existingIndex = history.indexOf(_pathname)
+  if (existingIndex !== -1) {
+    return {
+      pathname: _pathname,
+      history: history.slice(0, existingIndex + 1),
+      search: search.slice(0, existingIndex + 1),
+      index: existingIndex
+    }
+  }
+
+  // 常规 push：若不在末尾则截断后续再追加，否则直接追加
+  const shouldTruncate = index !== history.length - 1 && index >= 0
+  const newHistory = shouldTruncate ? history.slice(0, index + 1) : [...history]
+  const newSearch = shouldTruncate ? search.slice(0, index + 1) : [...search]
+  newHistory.push(_pathname)
+  newSearch.push(_search)
+
+  return {
     pathname: _pathname,
-    history,
-    index: history.length - 1,
-    search
+    history: newHistory,
+    index: newHistory.length - 1,
+    search: newSearch
   }
 }

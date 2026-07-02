@@ -8,32 +8,31 @@ interface MatchData {
   paramKeys: string[]
 }
 
-export default function setMatch({ match, path, basicName, paramKeys }: MatchData) {
+/** 纯函数：返回追加当前路由后的 match 快照（已存在则原样返回副本） */
+export default function setMatch({ match, path, basicName, paramKeys }: MatchData): Match {
   const _match = deepCopy(match ?? [])
 
   if (paramKeys.length > 0) {
     path = path.replace(/\/$/, '') + '/:' + paramKeys.join('/:')
   }
 
-  const __match = _match.find((item) => item.path === path)
-  if (__match) {
+  const existed = _match.find((item) => item.path === path)
+  if (existed) {
     return _match
   }
 
   if (!basicName) {
-    const __match: MatchItem = {
+    _match.push({
       basicName: ['/'],
       path
-    }
-    _match.push(__match)
+    })
   } else {
-    const _basicName = match.filter((item) => basicName.includes(item.path)).map((item) => item.path)
-    const __match: MatchItem = {
+    const _basicName = _match.filter((item) => basicName.includes(item.path)).map((item) => item.path)
+    _match.push({
       basicName: _basicName,
       path
-    }
-    _match.push(__match)
+    })
   }
 
-  window.match = _match
+  return _match
 }

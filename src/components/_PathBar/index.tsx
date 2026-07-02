@@ -1,25 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useLocation, useNavigate } from '../..'
+import { RouterContext } from '../../contexts'
 import ReactDOM from 'react-dom'
-import { deepCopy, get_string_width } from 'hsu-utils'
+import { get_string_width } from 'hsu-utils'
 import Icon from './Icon'
-
-Object.defineProperty(window, 'refresh', {
-  get: function () {
-    const value = this._refresh ?? false
-
-    return value
-  },
-  set: function (value: boolean) {
-    const customEvent = new CustomEvent<boolean>('refreshChange', {
-      detail: value,
-      bubbles: false
-    })
-    window.dispatchEvent(customEvent)
-
-    this._refresh = value
-  }
-})
 
 const PathBar: React.FC = () => {
   useEffect(() => {
@@ -31,9 +15,10 @@ const PathBar: React.FC = () => {
 
   const Bar: React.FC = () => {
     const navigate = useNavigate()
+    const store = useContext(RouterContext)
     const { pathname, search, index, history } = useLocation()
 
-    const _search = search[index] as Record<string, unknown>
+    const _search = (search[index] ?? {}) as Record<string, unknown>
 
     const fullSearch = Object.keys(_search)
       .map((key) => `${key}=${JSON.stringify(_search[key])}`)
@@ -71,12 +56,7 @@ const PathBar: React.FC = () => {
         >
           <Icon.Left onClick={() => navigate(-1)} disabled={index === 0} />
           <Icon.Right onClick={() => navigate(1)} disabled={index === history.length - 1} />
-          <Icon.Refresh
-            onClick={() => {
-              window.router = deepCopy(window.router)
-              window.refresh = true
-            }}
-          />
+          <Icon.Refresh onClick={() => store.reload()} />
         </div>
         <input
           type='text'
