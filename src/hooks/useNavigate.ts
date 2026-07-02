@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react'
-import { NavigationContext } from '../contexts'
+import { RouterContext } from '../contexts'
 import { PushOptions } from '../history/_push'
 import { GoOptions } from '../history/_go'
 
@@ -8,7 +8,7 @@ interface NavigateFunction {
 }
 
 export default function useNavigate(): NavigateFunction {
-  const navigator = useContext(NavigationContext).navigator
+  const { navigator } = useContext(RouterContext)
 
   const navigate: NavigateFunction = useCallback(
     (to: string | number, options?: PushOptions | GoOptions) => {

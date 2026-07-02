@@ -9,6 +9,14 @@ interface NodeInfo {
   refresh: boolean
 }
 
+/** 段级前缀匹配：避免子串误判（如 /path1 误匹配 /path10） */
+function isSegmentPrefix(location: string, path: string): boolean {
+  const locationParts = location.split('/').filter(Boolean)
+  const pathParts = path.split('/').filter(Boolean)
+  if (pathParts.length > locationParts.length) return false
+  return pathParts.every((part, i) => part === locationParts[i])
+}
+
 export default function isNullNode({ location, path, paramKeys, match, params, refresh }: NodeInfo): boolean {
   if (Object.keys(params ?? {})?.length > 0) {
     throw new Error('Nesting in dynamic routes is not allowed.')
@@ -16,7 +24,7 @@ export default function isNullNode({ location, path, paramKeys, match, params, r
 
   let isNull = false
 
-  isNull = !location.includes(path)
+  isNull = !isSegmentPrefix(location, path)
 
   if (!isNull) {
     const _locationPart = location.split('/').filter(Boolean)
@@ -30,13 +38,13 @@ export default function isNullNode({ location, path, paramKeys, match, params, r
 
   if (isNull && match.length > 0) {
     const _match = match.find((item) => {
-      const path = item.path
+      const itemStatic = item.path.replace(/(\/):(\w+)/gi, '')
 
       const _locationPart = location.split('/')
-      const _pathPart = path.split('/')
+      const _pathPart = item.path.split('/')
       const isLengthEqual = _locationPart.length === _pathPart.length
 
-      return location.includes(path.replace(/(\/):(\w+)/gi, '')) && isLengthEqual
+      return isSegmentPrefix(location, itemStatic) && isLengthEqual
     })?.basicName
 
     if (_match && _match.includes(path)) {

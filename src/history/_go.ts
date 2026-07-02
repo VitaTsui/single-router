@@ -4,13 +4,14 @@ export interface GoOptions {
   replace?: boolean
 }
 
-export default function go(delta: number, options?: GoOptions) {
-  const { history, index, search } = window.router
+/** 纯函数：基于当前状态计算 go 后的新状态；越界时返回原状态 */
+export default function go(state: IRouter, delta: number, options?: GoOptions): IRouter {
+  const { history, index, search } = state
 
   const _index = index + delta
 
   if (_index > history.length - 1 || _index < 0) {
-    return
+    return state
   }
 
   const _pathname = history[_index]
@@ -19,10 +20,10 @@ export default function go(delta: number, options?: GoOptions) {
   let _search = search
   if (options?.replace) {
     _history = history.slice(0, _index + 1)
-    _search = _search.slice(0, _index + 1)
+    _search = search.slice(0, _index + 1)
   }
 
-  window.router = {
+  return {
     pathname: _pathname,
     history: _history,
     search: _search,

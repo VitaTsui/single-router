@@ -15,9 +15,3 @@ declare interface IRouter {
   search: Array<Search>
   index: number
 }
-
-declare interface Window {
-  router: IRouter
-  match: Match
-  refresh: boolean
-}

@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react'
 import { useLocation } from '../hooks'
 import { OutletContext, ParamsContext, SearchContext } from '../contexts'
-import getParams from '../_utils/getParams'
+import { getParamsByPattern } from '../_utils/getParams'
 import { Routes } from '../hooks/useRoutes'
 
 export interface NestedRouteProps {
@@ -14,7 +14,7 @@ export interface NestedRouteProps {
 
 /**
  * 将路径中的动态段（/:param）去掉，得到用于前缀匹配的静态部分。
- * 例：/users/:id/posts → /users
+ * 例：/users/:id/posts → /users/posts
  */
 function getStaticPath(path: string): string {
   return path.replace(/(\/):(\w+)/gi, '')
@@ -29,106 +29,94 @@ function getParamKeys(path: string): string[] {
 }
 
 /**
- * 判断 pathname 是否以 path（已去除动态段）为前缀，
- * 同时考虑参数占位符的数量。
+ * 判断 pathname 是否落在 pattern（含参数占位符）的范围内（段级前缀匹配）。
+ * exact 为 true 时要求段数完全一致。
  */
-function isPrefixMatch(pathname: string, staticPath: string, paramCount: number): boolean {
-  const pathParts = staticPath.split('/').filter(Boolean)
+function matchPattern(pathname: string, pattern: string, exact: boolean): boolean {
+  const patternParts = pattern.split('/').filter(Boolean)
   const locationParts = pathname.split('/').filter(Boolean)
-  if (locationParts.length < pathParts.length + paramCount) return false
-  return pathParts.every((part, i) => part === locationParts[i])
+
+  if (exact ? locationParts.length !== patternParts.length : locationParts.length < patternParts.length) {
+    return false
+  }
+
+  return patternParts.every((part, i) => part.startsWith(':') || part === locationParts[i])
 }
 
-/**
- * 判断 pathname 是否精确匹配 path（含参数占位符）。
- */
-function isExactMatch(pathname: string, staticPath: string, paramCount: number): boolean {
-  const pathParts = staticPath.split('/').filter(Boolean)
-  const locationParts = pathname.split('/').filter(Boolean)
-  return (
-    locationParts.length === pathParts.length + paramCount &&
-    pathParts.every((part, i) => part === locationParts[i])
-  )
+/** 按 formatRoutes 的语义拼出子路由完整路径：已含父路径则原样，否则父路径 + 子路径 */
+function resolveChildPath(parentPath: string, childPath: string): string {
+  if (childPath.includes(parentPath)) return childPath
+  return `${parentPath}${childPath.startsWith('/') ? '' : '/'}${childPath}`
 }
+
+/** 叶子路由之下不再有子路由：封住 OutletContext，防止叶子里误用 <Outlet/> 时读到自身造成递归 */
+const EMPTY_OUTLET = { element: null }
 
 const NestedRoute: React.FC<NestedRouteProps> = ({ path: parentPath, element, routes }) => {
   const { pathname, search, index } = useLocation()
 
-  // 规范化父路径（以 / 开头，去掉动态段）
-  const normalizedParent = useMemo(() => {
-    const raw = parentPath.startsWith('/') ? parentPath : `/${parentPath}`
-    return getStaticPath(raw)
-  }, [parentPath])
-
-  const parentParamKeys = useMemo(() => getParamKeys(parentPath), [parentPath])
+  // 规范化父路径（以 / 开头，保留动态段用于匹配与取参）
+  const rawParent = useMemo(() => (parentPath.startsWith('/') ? parentPath : `/${parentPath}`), [parentPath])
 
   // 判断当前 pathname 是否在父路由的范围内
-  const isUnder = useMemo(
-    () => isPrefixMatch(pathname, normalizedParent, parentParamKeys.length),
-    [pathname, normalizedParent, parentParamKeys]
-  )
+  const isUnder = useMemo(() => matchPattern(pathname, rawParent, false), [pathname, rawParent])
+
+  // 父路径上的动态参数（提供给父 element 及 index 子路由）
+  const parentParams = useMemo(() => getParamsByPattern(pathname, rawParent), [pathname, rawParent])
 
   // 找到匹配的直接子路由，返回对应的渲染元素
   const outletElement = useMemo((): React.ReactElement | null => {
     if (!isUnder) return null
 
-    const parentStaticParts = normalizedParent.split('/').filter(Boolean)
+    const parentParts = rawParent.split('/').filter(Boolean)
     const locationParts = pathname.split('/').filter(Boolean)
 
     for (const child of routes) {
       // ── index 路由：与父路径段数完全一致 ──────────────────────────────
       if (child.index) {
-        if (locationParts.length === parentStaticParts.length + parentParamKeys.length) {
-          return child.element ?? null
+        if (locationParts.length === parentParts.length) {
+          return <OutletContext.Provider value={EMPTY_OUTLET}>{child.element ?? null}</OutletContext.Provider>
         }
         continue
       }
 
       if (!child.path) continue
 
-      // 计算子路由完整路径
-      const rawChildPath = child.path.startsWith('/')
-        ? child.path
-        : `${normalizedParent}/${child.path}`
-
-      const childStatic = getStaticPath(rawChildPath)
-      const childParamKeys = getParamKeys(rawChildPath)
+      const childPath = resolveChildPath(rawParent, child.path)
 
       // ── 含 children 的中间路由：前缀匹配，递归交给 NestedRoute ────────
       if (child.children) {
-        if (isPrefixMatch(pathname, childStatic, childParamKeys.length)) {
-          return (
-            <NestedRoute
-              path={rawChildPath}
-              element={child.element}
-              routes={child.children}
-            />
-          )
+        if (matchPattern(pathname, childPath, false)) {
+          return <NestedRoute path={childPath} element={child.element} routes={child.children} />
         }
         continue
       }
 
       // ── 叶子路由：精确匹配 ──────────────────────────────────────────
-      if (isExactMatch(pathname, childStatic, childParamKeys.length)) {
-        const params = getParams(pathname, childParamKeys)
+      if (matchPattern(pathname, childPath, true)) {
+        const params = getParamsByPattern(pathname, childPath)
         return (
-          <ParamsContext.Provider value={{ params }}>
-            {child.element ?? null}
-          </ParamsContext.Provider>
+          <OutletContext.Provider value={EMPTY_OUTLET}>
+            <ParamsContext.Provider value={{ params }}>{child.element ?? null}</ParamsContext.Provider>
+          </OutletContext.Provider>
         )
       }
     }
 
     return null
-  }, [isUnder, pathname, routes, normalizedParent, parentParamKeys])
+  }, [isUnder, pathname, routes, rawParent])
+
+  const outletState = useMemo(() => ({ element: outletElement }), [outletElement])
 
   if (!isUnder) return null
 
   const _search = search[index] ?? {}
 
   return (
-    <OutletContext.Provider value={outletElement}>
-      <SearchContext.Provider value={{ search: _search }}>{element}</SearchContext.Provider>
+    <OutletContext.Provider value={outletState}>
+      <ParamsContext.Provider value={{ params: parentParams }}>
+        <SearchContext.Provider value={{ search: _search }}>{element}</SearchContext.Provider>
+      </ParamsContext.Provider>
     </OutletContext.Provider>
   )
 }

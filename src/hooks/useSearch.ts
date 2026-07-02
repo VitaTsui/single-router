@@ -1,31 +1,30 @@
 import { useContext } from 'react'
-import { SearchContext } from '../contexts'
+import { RouterContext, SearchContext } from '../contexts'
 
 interface SetSearchOptions {
   replace?: boolean
 }
 
 export default function useSearch<T extends Partial<T>>(): [T, (search: T, options?: SetSearchOptions) => void] {
+  const store = useContext(RouterContext)
   const search = useContext(SearchContext).search as T
 
   const setSearch = (search: Search, options: SetSearchOptions = {}) => {
-    const { history, pathname, search: _search, index } = window.router
+    const state = store.getState()
     const { replace = true } = options
 
     if (replace) {
-      _search[index] = search
+      const newSearch = [...state.search]
+      newSearch[state.index] = search
 
-      window.router = { ...window.router, search: _search }
+      store.setState({ ...state, search: newSearch })
     } else {
-      _search.push(search)
-      history.push(pathname)
-
-      window.router = {
-        pathname,
-        history,
-        index: history.length - 1,
-        search: _search
-      }
+      store.setState({
+        pathname: state.pathname,
+        history: [...state.history, state.pathname],
+        index: state.history.length,
+        search: [...state.search, search]
+      })
     }
   }
 
