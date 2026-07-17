@@ -1,8 +1,20 @@
 {
   "name": "@hsu-react/single-router",
   "version": "0.0.26",
-  "description": "single-router",
-  "repository": "git@github.com:VitaTsui/single-router.git",
+  "description": "不改变浏览器 URL 的 React 单页内路由，提供类 React Router 的组件与 Hooks API",
+  "keywords": [
+    "react",
+    "router",
+    "single-page",
+    "in-memory-router",
+    "nested-routes",
+    "hooks"
+  ],
+  "homepage": "https://github.com/VitaTsui/single-router#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VitaTsui/single-router.git"
+  },
   "author": "VitaHsu <vitahsu7@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",

@@ -48,12 +48,12 @@ describe('RouterStore', () => {
     history.push('/a')
     history.push('/b')
     history.push('/c')
-    history.go(-1) // 退到 /b，index=1，/c 仍在 history 里
-    history.push('/d') // 此时 index(1) !== length-1(2)，应截断 /c 并追加 /d
+    history.go(-1) // Back to /b, index=1, /c still in history
+    history.push('/d') // Now index(1) !== length-1(2), so /c should be truncated and /d appended
     expect(store.getState()).toMatchObject({ pathname: '/d', history: ['/a', '/b', '/d'], index: 2 })
   })
 
-  // ─── push 查询参数解析（getSearch）────────────────────────────────────────
+  // ─── push query param parsing (getSearch) ────────────────────────────────
 
   test('push：解析 JSON 类型的查询参数（数字、布尔值）', () => {
     history.push('/page?count=5&flag=true')
@@ -68,13 +68,13 @@ describe('RouterStore', () => {
   })
 
   test('push：忽略畸形查询参数（缺少 key 或 value）', () => {
-    // ?=value 缺 key、?key= 缺 value、?valid=1 正常
+    // ?=value missing key, ?key= missing value, ?valid=1 valid
     history.push('/page?=nokey&empty=&valid=1')
     const { index, search } = store.getState()
     expect(search[index]).toEqual({ valid: 1 })
   })
 
-  // ─── 不可变性 ─────────────────────────────────────────────────────────────
+  // ─── Immutability ─────────────────────────────────────────────────────────
 
   test('state 对象不可直接赋值', () => {
     history.push('/push')
@@ -133,11 +133,11 @@ describe('RouterStore', () => {
     history.push('/a')
     history.push('/b')
     history.push('/c')
-    history.go(-1, { replace: true }) // 退到 /b，同时截断 /c
+    history.go(-1, { replace: true }) // Back to /b, truncating /c at the same time
     expect(store.getState()).toMatchObject({ pathname: '/b', history: ['/a', '/b'], index: 1 })
   })
 
-  // ─── 订阅 ─────────────────────────────────────────────────────────────────
+  // ─── Subscription ─────────────────────────────────────────────────────────
 
   test('subscribe：状态变化时通知，退订后不再通知', () => {
     let count = 0
@@ -149,7 +149,7 @@ describe('RouterStore', () => {
     expect(count).toBe(1)
   })
 
-  // ─── 初始路径 ─────────────────────────────────────────────────────────────
+  // ─── Initial path ─────────────────────────────────────────────────────────
 
   test('initialPath：自定义初始路径', () => {
     const s = new RouterStore({ initialPath: '/home' })

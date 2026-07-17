@@ -4,7 +4,7 @@ export interface GoOptions {
   replace?: boolean
 }
 
-/** 纯函数：基于当前状态计算 go 后的新状态；越界时返回原状态 */
+/** Pure function: computes the new state after a go based on the current state; returns the original state when out of bounds */
 export default function go(state: IRouter, delta: number, options?: GoOptions): IRouter {
   const { history, index, search } = state
 

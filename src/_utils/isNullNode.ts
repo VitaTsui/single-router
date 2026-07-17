@@ -9,7 +9,7 @@ interface NodeInfo {
   refresh: boolean
 }
 
-/** 段级前缀匹配：避免子串误判（如 /path1 误匹配 /path10） */
+/** Segment-level prefix match: avoids substring false positives (e.g. /path1 wrongly matching /path10) */
 function isSegmentPrefix(location: string, path: string): boolean {
   const locationParts = location.split('/').filter(Boolean)
   const pathParts = path.split('/').filter(Boolean)

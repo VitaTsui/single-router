@@ -5,6 +5,11 @@ interface SetSearchOptions {
   replace?: boolean
 }
 
+/**
+ * Reads and updates the current route's query params.
+ * `setSearch` defaults to `replace: true` (only updates the current entry's search, history stays unchanged);
+ * pass `{ replace: false }` to append a new entry to history instead.
+ */
 export default function useSearch<T extends Partial<T>>(): [T, (search: T, options?: SetSearchOptions) => void] {
   const store = useContext(RouterContext)
   const search = useContext(SearchContext).search as T

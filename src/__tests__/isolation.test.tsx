@@ -3,7 +3,7 @@ import { describe, expect, test, beforeEach } from '@jest/globals'
 import { render, screen, act } from '@testing-library/react'
 import { SingleRouter, Route, useNavigate, routerHistory, defaultRouterStore } from '../index'
 
-/** 点击后跳转到指定路径的按钮 */
+/** Button that navigates to the given path on click */
 const NavButton: React.FC<{ to: string; label: string }> = ({ to, label }) => {
   const navigate = useNavigate()
   return <button onClick={() => navigate(to)}>{label}</button>
@@ -28,11 +28,11 @@ describe('路由隔离（isolate）', () => {
       </>
     )
 
-    // 初始都未匹配
+    // Neither matches initially
     expect(screen.queryByText('A-detail')).toBeNull()
     expect(screen.queryByText('B-detail')).toBeNull()
 
-    // A 导航后只有 A 渲染，B 不受影响
+    // After A navigates, only A renders; B is unaffected
     act(() => {
       screen.getByText('goA').click()
     })
@@ -50,7 +50,7 @@ describe('路由隔离（isolate）', () => {
     act(() => {
       routerHistory.push('/global')
     })
-    // 全局导航不影响隔离实例
+    // Global navigation does not affect the isolated instance
     expect(screen.queryByText('isolated-view')).toBeNull()
   })
 
@@ -91,14 +91,14 @@ describe('路由隔离（isolate）', () => {
     expect(screen.queryByText('saved-view')).not.toBeNull()
     unmount()
 
-    // 重新挂载同 persistKey 的实例，状态恢复
+    // Remounting an instance with the same persistKey restores the state
     render(
       <SingleRouter isolate persistKey='page-a'>
         <Route path='/saved' element={<div>saved-view-2</div>} />
       </SingleRouter>
     )
     expect(screen.queryByText('saved-view-2')).not.toBeNull()
-    // 且默认全局 key 未被污染
+    // And the default global key is not polluted
     expect(localStorage.getItem('single-router:state:page-a')).not.toBeNull()
   })
 })

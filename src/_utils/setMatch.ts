@@ -8,7 +8,7 @@ interface MatchData {
   paramKeys: string[]
 }
 
-/** 纯函数：返回追加当前路由后的 match 快照（已存在则原样返回副本） */
+/** Pure function: returns a match snapshot with the current route appended (returns a plain copy if it already exists) */
 export default function setMatch({ match, path, basicName, paramKeys }: MatchData): Match {
   const _match = deepCopy(match ?? [])
 
