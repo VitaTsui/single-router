@@ -1,6 +1,6 @@
 /// <reference types="../typing" />
 
-/** 从 pathname 末尾按 paramKeys 数量提取参数（适用于参数在末尾的扁平路由） */
+/** Extracts params from the end of pathname by the number of paramKeys (for flat routes whose params sit at the end) */
 export default function getParams(location: string, paramKeys: string[]): Params {
   if (paramKeys.length === 0) return {}
 
@@ -14,8 +14,8 @@ export default function getParams(location: string, paramKeys: string[]): Params
 }
 
 /**
- * 按 pattern 的段位置提取参数，支持参数在路径中间的场景。
- * 例：pattern /users/:id/posts + pathname /users/5/posts → { id: '5' }
+ * Extracts params by segment position in the pattern, supporting params in the middle of the path.
+ * e.g. pattern /users/:id/posts + pathname /users/5/posts → { id: '5' }
  */
 export function getParamsByPattern(location: string, pattern: string): Params {
   const patternParts = pattern.split('/').filter(Boolean)

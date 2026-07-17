@@ -25,7 +25,7 @@ function getSearch(pathname: string) {
   return search
 }
 
-/** 纯函数：基于当前状态计算 push 后的新状态 */
+/** Pure function: computes the new state after a push based on the current state */
 export default function push(state: IRouter, pathname: string, options?: PushOptions): IRouter {
   const _pathname = pathname.split('?')[0]
   const _search = getSearch(pathname)
@@ -34,7 +34,7 @@ export default function push(state: IRouter, pathname: string, options?: PushOpt
 
   if (options?.replace) {
     if (index === -1) {
-      // 空历史，直接写入第一条
+      // Empty history: write the first entry directly
       return {
         index: 0,
         pathname: _pathname,
@@ -55,7 +55,7 @@ export default function push(state: IRouter, pathname: string, options?: PushOpt
     }
   }
 
-  // 如果目标路径已存在于历史中，回退到该位置并截断后续历史
+  // If the target path already exists in history, go back to that position and truncate the entries after it
   const existingIndex = history.indexOf(_pathname)
   if (existingIndex !== -1) {
     return {
@@ -66,7 +66,7 @@ export default function push(state: IRouter, pathname: string, options?: PushOpt
     }
   }
 
-  // 常规 push：若不在末尾则截断后续再追加，否则直接追加
+  // Regular push: if not at the end, truncate later entries before appending; otherwise append directly
   const shouldTruncate = index !== history.length - 1 && index >= 0
   const newHistory = shouldTruncate ? history.slice(0, index + 1) : [...history]
   const newSearch = shouldTruncate ? search.slice(0, index + 1) : [...search]

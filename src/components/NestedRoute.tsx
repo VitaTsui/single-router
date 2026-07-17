@@ -13,24 +13,24 @@ export interface NestedRouteProps {
 }
 
 /**
- * 将路径中的动态段（/:param）去掉，得到用于前缀匹配的静态部分。
- * 例：/users/:id/posts → /users/posts
+ * Strips dynamic segments (/:param) from the path, yielding the static part used for prefix matching.
+ * e.g. /users/:id/posts → /users/posts
  */
 function getStaticPath(path: string): string {
   return path.replace(/(\/):(\w+)/gi, '')
 }
 
 /**
- * 提取路径中所有动态参数的 key。
- * 例：/users/:id/posts/:postId → ['id', 'postId']
+ * Extracts the keys of all dynamic params in the path.
+ * e.g. /users/:id/posts/:postId → ['id', 'postId']
  */
 function getParamKeys(path: string): string[] {
   return (path.match(/:(\w+)/g) || []).map((k) => k.slice(1))
 }
 
 /**
- * 判断 pathname 是否落在 pattern（含参数占位符）的范围内（段级前缀匹配）。
- * exact 为 true 时要求段数完全一致。
+ * Checks whether pathname falls within the scope of pattern (with param placeholders), using segment-level prefix matching.
+ * When exact is true, the segment counts must match exactly.
  */
 function matchPattern(pathname: string, pattern: string, exact: boolean): boolean {
   const patternParts = pattern.split('/').filter(Boolean)
@@ -43,28 +43,28 @@ function matchPattern(pathname: string, pattern: string, exact: boolean): boolea
   return patternParts.every((part, i) => part.startsWith(':') || part === locationParts[i])
 }
 
-/** 按 formatRoutes 的语义拼出子路由完整路径：已含父路径则原样，否则父路径 + 子路径 */
+/** Builds the child route's full path following formatRoutes semantics: kept as-is if it already contains the parent path, otherwise parent path + child path */
 function resolveChildPath(parentPath: string, childPath: string): string {
   if (childPath.includes(parentPath)) return childPath
   return `${parentPath}${childPath.startsWith('/') ? '' : '/'}${childPath}`
 }
 
-/** 叶子路由之下不再有子路由：封住 OutletContext，防止叶子里误用 <Outlet/> 时读到自身造成递归 */
+/** No child routes exist below a leaf route: seal OutletContext so a misused <Outlet/> inside a leaf cannot read itself and recurse */
 const EMPTY_OUTLET = { element: null }
 
 const NestedRoute: React.FC<NestedRouteProps> = ({ path: parentPath, element, routes }) => {
   const { pathname, search, index } = useLocation()
 
-  // 规范化父路径（以 / 开头，保留动态段用于匹配与取参）
+  // Normalize the parent path (leading /, keeping dynamic segments for matching and param extraction)
   const rawParent = useMemo(() => (parentPath.startsWith('/') ? parentPath : `/${parentPath}`), [parentPath])
 
-  // 判断当前 pathname 是否在父路由的范围内
+  // Check whether the current pathname is within the parent route's scope
   const isUnder = useMemo(() => matchPattern(pathname, rawParent, false), [pathname, rawParent])
 
-  // 父路径上的动态参数（提供给父 element 及 index 子路由）
+  // Dynamic params on the parent path (provided to the parent element and index child routes)
   const parentParams = useMemo(() => getParamsByPattern(pathname, rawParent), [pathname, rawParent])
 
-  // 找到匹配的直接子路由，返回对应的渲染元素
+  // Find the matching direct child route and return its render element
   const outletElement = useMemo((): React.ReactElement | null => {
     if (!isUnder) return null
 
@@ -72,7 +72,7 @@ const NestedRoute: React.FC<NestedRouteProps> = ({ path: parentPath, element, ro
     const locationParts = pathname.split('/').filter(Boolean)
 
     for (const child of routes) {
-      // ── index 路由：与父路径段数完全一致 ──────────────────────────────
+      // ── Index route: segment count exactly equals the parent path's ──────
       if (child.index) {
         if (locationParts.length === parentParts.length) {
           return <OutletContext.Provider value={EMPTY_OUTLET}>{child.element ?? null}</OutletContext.Provider>
@@ -84,7 +84,7 @@ const NestedRoute: React.FC<NestedRouteProps> = ({ path: parentPath, element, ro
 
       const childPath = resolveChildPath(rawParent, child.path)
 
-      // ── 含 children 的中间路由：前缀匹配，递归交给 NestedRoute ────────
+      // ── Intermediate route with children: prefix match, recurse into NestedRoute ──
       if (child.children) {
         if (matchPattern(pathname, childPath, false)) {
           return <NestedRoute path={childPath} element={child.element} routes={child.children} />
@@ -92,7 +92,7 @@ const NestedRoute: React.FC<NestedRouteProps> = ({ path: parentPath, element, ro
         continue
       }
 
-      // ── 叶子路由：精确匹配 ──────────────────────────────────────────
+      // ── Leaf route: exact match ─────────────────────────────────────────
       if (matchPattern(pathname, childPath, true)) {
         const params = getParamsByPattern(pathname, childPath)
         return (

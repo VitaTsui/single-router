@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { useLocation, useNavigate } from '../..'
 import { RouterContext } from '../../contexts'
 import ReactDOM from 'react-dom'
-import { get_string_width } from 'hsu-utils'
+import { get_string_size } from 'hsu-utils'
 import Icon from './Icon'
 
 const PathBar: React.FC = () => {
@@ -64,7 +64,7 @@ const PathBar: React.FC = () => {
             outline: 'none',
             boxSizing: 'border-box',
             pointerEvents: 'none',
-            width: `${get_string_width(fullPath) * 14 + 40}px`,
+            width: `${get_string_size(fullPath, { size: 14 }).width + 40}px`,
             height: '100%',
             padding: '0 10px',
             fontSize: '14px',

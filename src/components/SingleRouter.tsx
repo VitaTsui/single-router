@@ -5,26 +5,30 @@ import PathBar from './_PathBar'
 
 interface RSProps {
   children?: React.ReactNode
-  /** 开发环境是否展示路径栏；isolate 实例默认不展示（多实例会互相遮挡） */
+  /** Whether to show the path bar in development; isolate instances hide it by default (multiple instances would overlap each other) */
   showPath?: boolean
   /**
-   * 路由隔离：为本路由树创建独立的路由状态，
-   * 与其他 SingleRouter（含默认全局实例）互不影响。
+   * Router isolation: creates independent routing state for this route tree,
+   * unaffected by other SingleRouter instances (including the default global one).
    */
   isolate?: boolean
   /**
-   * isolate 下的持久化 key（存储于 localStorage 'single-router:state:<persistKey>'）；
-   * 不传则隔离状态只存在内存中，卸载即消失。
+   * Persistence key when isolate is enabled (stored in localStorage as 'single-router:state:<persistKey>');
+   * if omitted, the isolated state lives only in memory and is lost on unmount.
    */
   persistKey?: string
-  /** isolate 下的初始路径，默认 '/' */
+  /** Initial path when isolate is enabled, defaults to '/' */
   initialPath?: string
 }
 
+/**
+ * Router container. By default all SingleRouter instances share the same global routing state (persisted to localStorage);
+ * with isolate enabled it holds its own routing state, suitable for embedding a local router inside a page / modal.
+ */
 const SingleRouter: React.FC<RSProps> = (props) => {
   const { children, isolate = false, persistKey, initialPath, showPath = !isolate } = props
 
-  // isolate 配置仅在首次挂载时生效，实例生命周期内不切换 store
+  // The isolate config only takes effect on first mount; the store never switches during the instance's lifetime
   const store = useMemo(() => {
     if (!isolate) return defaultRouterStore
 

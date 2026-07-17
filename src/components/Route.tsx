@@ -7,10 +7,16 @@ import isNullNode from '../_utils/isNullNode'
 import setMatch from '../_utils/setMatch'
 
 export interface RouteProps {
+  /** Full route path (supports :param dynamic segments), e.g. '/users/:id' */
   path: string
+  /** Element rendered when the path matches */
   element?: React.ReactElement | null
 }
 
+/**
+ * Declares a route: renders element when the current path matches path, otherwise renders null.
+ * Nested routes are written inside child components and loaded in place; they can also be generated from a config tree via useRoutes.
+ */
 const Route: React.FC<RouteProps> = (props) => {
   const { path, element, paramKeys } = formatRoute(props)
   const store = useContext(RouterContext)

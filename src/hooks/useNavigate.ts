@@ -7,6 +7,12 @@ interface NavigateFunction {
   (to: string | number, options?: PushOptions | GoOptions): void
 }
 
+/**
+ * Returns the navigate function.
+ * - `navigate('/path')` navigates and records the entry in history; `{ replace: true }` resets history before navigating
+ * - `navigate(1)` / `navigate(-1)` moves forward / backward (no-op when out of history bounds);
+ *   with `{ replace: true }`, the routes after the target are removed from history
+ */
 export default function useNavigate(): NavigateFunction {
   const { navigator } = useContext(RouterContext)
 
